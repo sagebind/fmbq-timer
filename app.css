@@ -1,0 +1,75 @@
+html {
+    background-color: #333;
+}
+
+header {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: #03a9fa;
+    box-shadow: 0 0 0.25rem black;
+}
+
+header > nav > * {
+    display: inline-block;
+    padding: 0.75rem;
+}
+
+main {
+    margin-top: 4rem;
+    color: white;
+    fill: white;
+}
+
+main > section {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 1rem;
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.1s ease-in;
+}
+main > section.is-active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.button {
+    background-color: #03a9fa;
+    border: none;
+    box-shadow: 0 0 0.25rem black;
+}
+
+.countdown-display {
+    display: block;
+    margin: 1rem auto;
+    max-height: 40vh;
+}
+.countdown-text {
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.navbar-menu {
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    box-shadow: 0 0 2rem #aaa;
+    width: 100vh;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.navbar-menu.is-active {
+    opacity: 1;
+}
+
+section#timer button {
+    display: block;
+    margin: 1rem 0;
+}

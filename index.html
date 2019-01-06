@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>FMBQ Timer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="timer.webmanifest">
+        <script src="app.js" defer></script>
+        <link rel="stylesheet" href="bulma.min.css">
+        <link rel="stylesheet" href="app.css">
+    </head>
+
+    <body class="window is-dark">
+        <header>
+            <nav role="navigation" aria-label="main navigation">
+                <span>FMBQ Timer</span>
+                <a onclick="app.showTimer()">Timer</a>
+                <a onclick="app.showSettings()">Settings</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="timer" class="is-active">
+                <svg class="countdown-display" viewBox="0 0 100 100">
+                    <circle class="countdown-circle" cx="50" cy="50" r="45" fill="none" stroke="white" transform="rotate(-90, 50, 50)" stroke-dasharray="200 1000"></circle>
+                    <text class="countdown-text" x="50" y="50" style="font-size: 36px" dominant-baseline="central">0.0</text>
+                </svg>
+
+                <button class="button" onclick="app.start(20)">Start from 20</button>
+                <button class="button" onclick="app.start(30)">Start from 30</button>
+                <button class="button" onclick="app.start(60)">Start from 60</button>
+                <button class="button" onclick="app.cancel()">Cancel</button>
+            </section>
+
+            <section id="settings">
+                Pick a sound:
+                <select id="sounds-select-box">
+                </select>
+
+                <button class="button" onclick="app.playSound()">Test sound</button>
+            </section>
+        </main>
+    </body>
+</html>
