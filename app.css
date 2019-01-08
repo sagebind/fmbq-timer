@@ -1,25 +1,32 @@
-html {
+html, body {
     background-color: #333;
 }
 
-header {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
+nav {
+    box-shadow: 0 0 0.5rem black;
     background-color: #03a9fa;
-    box-shadow: 0 0 0.25rem black;
+    display: flex;
+    align-items: stretch;
+    vertical-align: middle;
 }
 
-header > nav > * {
-    display: inline-block;
-    padding: 0.75rem;
+nav > * {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    color: white;
+    vertical-align: middle;
+    border-bottom: 0.2rem solid transparent;
+    transition: all 0.2s ease-in;
+    outline: none;
+}
+
+nav > .active {
+    border-bottom-color: white;
 }
 
 main {
-    margin-top: 4rem;
+    padding-top: 3rem;
     color: white;
     fill: white;
 }
@@ -29,20 +36,21 @@ main > section {
     position: absolute;
     left: 0;
     right: 0;
-    margin: 0 1rem;
     opacity: 0;
     z-index: -1;
     transition: all 0.1s ease-in;
 }
-main > section.is-active {
+main > section.active {
     opacity: 1;
     z-index: 1;
 }
 
-.button {
+button {
     background-color: #03a9fa;
-    border: none;
-    box-shadow: 0 0 0.25rem black;
+}
+
+input, textarea, select {
+    background: black;
 }
 
 .countdown-display {
@@ -71,5 +79,11 @@ main > section.is-active {
 
 section#timer button {
     display: block;
-    margin: 1rem 0;
+    margin: 1rem;
+}
+
+.setting {
+    display: block;
+    padding: 1rem;
+    border-bottom: 0.1rem solid black;
 }

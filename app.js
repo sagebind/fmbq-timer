@@ -1,174 +1,213 @@
+var availableSounds = {
+    sweetalert1: {
+        name: "Sweet Alert 1",
+        src: "sounds/72125__kizilsungur__sweetalertsound1.wav",
+    },
+    sweetalert3: {
+        name: "Sweet Alert 3",
+        src: "sounds/72127__kizilsungur__sweetalertsound3.wav",
+    },
+    sweetalert4: {
+        name: "Sweet Alert 4",
+        src: "sounds/72128__kizilsungur__sweetalertsound4.wav",
+    },
+    sweetalert5: {
+        name: "Sweet Alert 5",
+        src: "sounds/72129__kizilsungur__sweetalertsound5.wav",
+    },
+    sweetalert: {
+        name: "Sweet Alert",
+        src: "sounds/204369__philitup321__alert-sound.ogg",
+    },
+    foofaraw: {
+        name: "Foofaraw",
+        src: "sounds/276607__mickleness__ringtone-foofaraw.wav",
+    },
+    fanta: {
+        name: "Fanta",
+        src: "sounds/276608__mickleness__ringtone-fanta.wav",
+    },
+    bumptious: {
+        name: "Bumptious",
+        src: "sounds/276609__mickleness__notification-bumptious.wav",
+    },
+    bugaboo: {
+        name: "Bugaboo",
+        src: "sounds/276610__mickleness__notification-bugaboo.wav",
+    },
+    unctuous: {
+        name: "Unctuous",
+        src: "sounds/276611__mickleness__notification-unctuous.wav",
+    },
+    tizzy: {
+        name: "Tizzy",
+        src: "sounds/276612__mickleness__ringtone-tizzy.wav",
+    },
+    ludic: {
+        name: "Ludic",
+        src: "sounds/276614__mickleness__ludic.wav",
+    },
+    correct: {
+        name: "Correct",
+        src: "sounds/415762__thebuilder15__notification-correct.wav",
+    },
+}
+
 var state = {
     active: false,
     startTime: 0,
-    audio: null,
+    endTime: 0,
+    audio: new Audio(),
 }
 
-var sounds = [
-    {
-        name: "Sweet Alert 1",
-        path: "sounds/72125__kizilsungur__sweetalertsound1.wav",
+window.app = {
+    settings: {
+        timerSound: "tizzy",
+        answerDuration: 20,
+        appealDuration: 30,
+        timeoutDuration: 60,
     },
-    {
-        name: "Sweet Alert 3",
-        path: "sounds/72127__kizilsungur__sweetalertsound3.wav",
-    },
-    {
-        name: "Sweet Alert 4",
-        path: "sounds/72128__kizilsungur__sweetalertsound4.wav",
-    },
-    {
-        name: "Sweet Alert 5",
-        path: "sounds/72129__kizilsungur__sweetalertsound5.wav",
-    },
-    {
-        name: "Sweet Alert",
-        path: "sounds/204369__philitup321__alert-sound.ogg",
-    },
-    {
-        name: "Foofaraw",
-        path: "sounds/276607__mickleness__ringtone-foofaraw.wav",
-    },
-    {
-        name: "Fanta",
-        path: "sounds/276608__mickleness__ringtone-fanta.wav",
-    },
-    {
-        name: "Bumptious",
-        path: "sounds/276609__mickleness__notification-bumptious.wav",
-    },
-    {
-        name: "Bugaboo",
-        path: "sounds/276610__mickleness__notification-bugaboo.wav",
-    },
-    {
-        name: "Unctuous",
-        path: "sounds/276611__mickleness__notification-unctuous.wav",
-    },
-    {
-        name: "Tizzy",
-        path: "sounds/276612__mickleness__ringtone-tizzy.wav",
-    },
-    {
-        name: "Ludic",
-        path: "sounds/276614__mickleness__ludic.wav",
-    },
-    {
-        name: "Correct",
-        path: "sounds/415762__thebuilder15__notification-correct.wav",
-    },
-];
 
-var timerValueLabel = document.querySelector(".countdown-display .countdown-text");
-var countdownCircle = document.querySelector(".countdown-display .countdown-circle");
-var soundsSelectBox = document.querySelector("#sounds-select-box");
+    loadSettings: function () {
+        var json = localStorage.getItem("settings");
+        if (json) {
+            Object.assign(app.settings, JSON.parse(json));
+        }
+    },
 
+    saveSettings: function () {
+        localStorage.setItem("settings", JSON.stringify(app.settings));
+    },
 
-var ui = {
     showPage: function (name) {
-        document.querySelector("main > section#" + name).classList.add("is-active");
-        document.querySelector("main > section:not(#" + name + ")").classList.remove("is-active");
+        document.querySelectorAll("a[href^=\"#\"]").forEach(function (tab) {
+            if (tab.getAttribute("href") === "#" + name) {
+                tab.classList.add("active");
+            } else {
+                tab.classList.remove("active");
+            }
+        });
+
+        document.querySelectorAll("main > section").forEach(function (page) {
+            if (page.id === name) {
+                page.classList.add("active");
+            } else {
+                page.classList.remove("active");
+            }
+        });
     },
 
-    /**
-     * This function gets invoked frequently to update the current state of the UI.
-     */
-    update: function () {
+    showCurrentPage: function () {
+        if (location.hash.length > 1) {
+            app.showPage(location.hash.substring(1));
+        } else {
+            app.showPage("timer");
+        }
+    },
+
+    startTimer: function (seconds) {
+        state.startTime = performance.now();
+        state.endTime = state.startTime + (seconds * 1000);
+        state.active = true;
+    },
+
+    cancelTimer: function () {
+        state.active = false;
+    },
+
+    install: function () {
+        if (window.matchMedia("(display-mode: standalone)").matches) {
+            alert("App is already installed!");
+        } else {
+            alert("Install is not supported on your device.");
+        }
+    },
+
+    playSound: function () {
+        state.audio.src = availableSounds[app.settings.timerSound].src;
+        state.audio.currentTime = 0;
+        state.audio.play();
+    },
+
+    tick: function () {
         if (state.active) {
             var total = state.endTime - state.startTime;
             var remaining = Math.max(0, state.endTime - performance.now());
 
-            ui.setCountdownValue(remaining);
-            ui.setCircleFraction(remaining / total);
+            app.setCountdownValue(remaining);
+            app.setCircleFraction(remaining / total);
 
             if (remaining <= 0) {
                 state.active = false;
                 app.playSound();
             }
         } else {
-            ui.setCountdownValue(0);
-            ui.setCircleFraction(1);
+            app.setCountdownValue(0);
+            app.setCircleFraction(1);
         }
     },
 
     setCountdownValue: function (value) {
         var text = (value / 1000).toFixed(1);
 
-        if (timerValueLabel.textContent != text) {
-            timerValueLabel.textContent = text;
+        if (app.countdownText.textContent != text) {
+            app.countdownText.textContent = text;
         }
     },
 
     setCircleFraction: function (fraction) {
-        countdownCircle.setAttribute("stroke-dasharray", (90 * Math.PI * fraction) + " 1000");
-    },
-}
-
-window.app = {
-    showTimer: function () {
-        ui.showPage("timer");
+        app.countdownCircle.setAttribute("stroke-dasharray", (90 * Math.PI * fraction) + " 1000");
     },
 
-    showSettings: function () {
-        ui.showPage("settings");
-    },
+    initUi: function () {
+        app.countdownText = document.querySelector(".countdown-display .countdown-text");
+        app.countdownCircle = document.querySelector(".countdown-display .countdown-circle");
 
-    start: function (seconds) {
-        state.startTime = performance.now();
-        state.endTime = state.startTime + (seconds * 1000);
-        state.active = true;
-    },
+        var soundsSelectBox = document.querySelector("#sounds-select-box");
 
-    cancel: function () {
-        state.active = false;
-    },
-
-    playSound: function () {
-        state.audio.play();
-    },
-
-    init: function () {
-        for (var i = 0; i < sounds.length; ++i) {
+        Object.keys(availableSounds).forEach(function (id) {
             var option = document.createElement("option");
-            option.value = i;
-            option.innerText = sounds[i].name;
+            option.value = id;
+            option.innerText = availableSounds[id].name;
             soundsSelectBox.appendChild(option);
-        }
-
-        soundsSelectBox.addEventListener("change", function () {
-            state.audio = new Audio(sounds[parseInt(this.value, 10)].path);
         });
 
-        state.audio = new Audio(sounds[0].path);
-        window.setInterval(ui.update, 50);
+        soundsSelectBox.value = app.settings.timerSound;
+
+        soundsSelectBox.addEventListener("change", function (e) {
+            app.settings.timerSound = e.target.value;
+            app.playSound();
+            app.saveSettings();
+        });
     },
 }
 
-app.init();
+window.addEventListener("hashchange", app.showCurrentPage);
 
+window.addEventListener("beforeinstallprompt", function (promptEvent) {
+    promptEvent.preventDefault();
+    app.install = function () {
+        promptEvent.prompt();
+    };
+});
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", function () {
+    // Make the app useable right away.
+    app.loadSettings();
+    app.initUi();
+    app.showCurrentPage();
+    window.setInterval(app.tick, 50);
 
-    // Get all "navbar-burger" elements
-    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-    // Check if there are any navbar burgers
-    if ($navbarBurgers.length > 0) {
-
-      // Add a click event on each of them
-      $navbarBurgers.forEach( el => {
-        el.addEventListener('click', () => {
-
-          // Get the target from the "data-target" attribute
-          const target = el.dataset.target;
-          const $target = document.getElementById(target);
-
-          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-          el.classList.toggle('is-active');
-          $target.classList.toggle('is-active');
-
-        });
-      });
+    // Set up offline cache handling.
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js");
     }
 
-  });
+    if ("caches" in window) {
+        caches.open("static").then(function (cache) {
+            cache.addAll(Object.keys(availableSounds).map(function (id) {
+                return availableSounds[id].src;
+            }));
+        });
+    }
+});
