@@ -1,34 +1,29 @@
+* {
+    transition-property: none;
+    transition-duration: 0s !important;
+}
+
+body.ready, body.ready * {
+    transition-duration: 0.2s !important;
+}
+
 html, body {
-    background-color: #333;
+    min-height: 100%;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-nav {
-    box-shadow: 0 0 0.5rem black;
-    background-color: #03a9fa;
-    display: flex;
-    align-items: stretch;
-    vertical-align: middle;
-}
-
-nav > * {
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    color: white;
-    vertical-align: middle;
-    border-bottom: 0.2rem solid transparent;
-    transition: all 0.2s ease-in;
-    outline: none;
-}
-
-nav > .active {
-    border-bottom-color: white;
+body {
+    transition-property: background, color;
 }
 
 main {
     padding-top: 3rem;
-    color: white;
-    fill: white;
 }
 
 main > section {
@@ -38,48 +33,90 @@ main > section {
     right: 0;
     opacity: 0;
     z-index: -1;
-    transition: all 0.1s ease-in;
+    transition-property: opacity;
 }
+
 main > section.active {
     opacity: 1;
     z-index: 1;
 }
 
-button {
-    background-color: #03a9fa;
+nav {
+    display: flex;
+    align-items: stretch;
+    vertical-align: middle;
+    justify-content: space-between;
+    padding: 0;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+}
+
+nav .icon {
+    font-size: 1.5rem;
+}
+
+nav a {
+    color: inherit;
+}
+
+nav > * {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    vertical-align: middle;
+    border-bottom: 0.2rem solid transparent;
+    transition-property: all;
+    outline: none;
+}
+
+button.round {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
 }
 
 input, textarea, select {
-    background: black;
+    color: inherit;
+}
+
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    vertical-align: text-top;
+    stroke: currentColor;
+    fill: currentColor;
 }
 
 .countdown-display {
-    display: block;
-    margin: 1rem auto;
-    max-height: 40vh;
+    position: relative;
+    margin: 1rem;
 }
+
+.countdown-display > svg {
+    display: block;
+    margin: 0 auto;
+    max-height: 50vh;
+}
+
+.countdown-circle {
+    transition-property: stroke-dasharray;
+}
+
 .countdown-text {
     text-anchor: middle;
-    pointer-events: none;
 }
 
-.navbar-menu {
+.countdown-display .reset-button {
     display: block;
-    visibility: hidden;
     position: absolute;
-    box-shadow: 0 0 2rem #aaa;
-    width: 100vh;
+    right: 1rem;
+    bottom: 1rem;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
 }
 
-.navbar-menu.is-active {
+body.timer-active .countdown-display .reset-button {
     opacity: 1;
-}
-
-section#timer button {
-    display: block;
-    margin: 1rem;
 }
 
 .setting {

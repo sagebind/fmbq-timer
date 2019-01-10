@@ -1,3 +1,9 @@
+var themes = {
+    light: "Light",
+    dark: "Dark",
+    joyful: "Joyful",
+};
+
 var availableSounds = {
     sweetalert1: {
         name: "Sweet Alert 1",
@@ -53,17 +59,29 @@ var availableSounds = {
     },
 }
 
-var state = {
-    active: false,
+window.state = {
+    timerActive: false,
     startTime: 0,
     endTime: 0,
     audio: new Audio(),
+
+    setTimerActive: function (active) {
+        state.timerActive = active;
+
+        if (active) {
+            document.body.classList.add("timer-active");
+        } else {
+            document.body.classList.remove("timer-active");
+        }
+    },
 }
 
 window.app = {
     settings: {
+        theme: "light",
         timerSound: "tizzy",
         answerDuration: 20,
+        prejumpDuration: 20,
         appealDuration: 30,
         timeoutDuration: 60,
     },
@@ -79,15 +97,18 @@ window.app = {
         localStorage.setItem("settings", JSON.stringify(app.settings));
     },
 
-    showPage: function (name) {
-        document.querySelectorAll("a[href^=\"#\"]").forEach(function (tab) {
-            if (tab.getAttribute("href") === "#" + name) {
-                tab.classList.add("active");
-            } else {
-                tab.classList.remove("active");
-            }
-        });
+    setTheme: function (theme, callback) {
+        app.settings.theme = theme;
+        app.saveSettings();
 
+        var link = document.getElementById("theme");
+        if (callback) {
+            link.addEventListener("load", callback, {once: true});
+        }
+        link.href = "themes/" + theme + ".css";
+    },
+
+    showPage: function (name) {
         document.querySelectorAll("main > section").forEach(function (page) {
             if (page.id === name) {
                 page.classList.add("active");
@@ -108,11 +129,11 @@ window.app = {
     startTimer: function (seconds) {
         state.startTime = performance.now();
         state.endTime = state.startTime + (seconds * 1000);
-        state.active = true;
+        state.setTimerActive(true);
     },
 
     cancelTimer: function () {
-        state.active = false;
+        state.setTimerActive(false);
     },
 
     install: function () {
@@ -130,7 +151,7 @@ window.app = {
     },
 
     tick: function () {
-        if (state.active) {
+        if (state.timerActive) {
             var total = state.endTime - state.startTime;
             var remaining = Math.max(0, state.endTime - performance.now());
 
@@ -138,7 +159,7 @@ window.app = {
             app.setCircleFraction(remaining / total);
 
             if (remaining <= 0) {
-                state.active = false;
+                state.setTimerActive(false);
                 app.playSound();
             }
         } else {
@@ -159,7 +180,9 @@ window.app = {
         app.countdownCircle.setAttribute("stroke-dasharray", (90 * Math.PI * fraction) + " 1000");
     },
 
-    initUi: function () {
+    init: function () {
+        app.loadSettings();
+
         app.countdownText = document.querySelector(".countdown-display .countdown-text");
         app.countdownCircle = document.querySelector(".countdown-display .countdown-circle");
 
@@ -179,6 +202,15 @@ window.app = {
             app.playSound();
             app.saveSettings();
         });
+
+        app.setTheme(app.settings.theme);
+        app.showCurrentPage();
+
+        setInterval(app.tick, 50);
+
+        setTimeout(function () {
+            document.body.classList.add("ready");
+        }, 100);
     },
 }
 
@@ -192,12 +224,6 @@ window.addEventListener("beforeinstallprompt", function (promptEvent) {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Make the app useable right away.
-    app.loadSettings();
-    app.initUi();
-    app.showCurrentPage();
-    window.setInterval(app.tick, 50);
-
     // Set up offline cache handling.
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("service-worker.js");
@@ -210,4 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }));
         });
     }
+
+    app.init();
 });

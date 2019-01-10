@@ -1,0 +1,22 @@
+body {
+    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    /* background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); */
+    /* background-image: linear-gradient(-20deg, #b721ff 0%, #21d4fd 100%); */
+    /* background-image: linear-gradient(to top, #209cff 0%, #68e0cf 100%); */
+    /* background-image: linear-gradient(to right, #ec77ab 0%, #7873f5 100%); */
+    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    /* background-image: linear-gradient(to top, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%); */
+    background-image: linear-gradient(-20deg, #3073d8 0%, #ae2dbe 100%);
+    /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); */
+    color: white;
+}
+
+nav {
+    background: none;
+}
+
+button, input, textarea, select {
+    background: white;
+    color: black;
+    text-transform: uppercase;
+}
