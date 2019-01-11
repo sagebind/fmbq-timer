@@ -112,6 +112,8 @@ window.app = {
                 page.classList.remove("active");
             }
         });
+
+        window.scrollTo(0, 0);
     },
 
     showCurrentPage: function () {
