@@ -10,32 +10,17 @@
     "description": "Timer app tailored Free Methodist Bible Quizzing.",
     "icons": [
         {
-            "src": "images/touch/homescreen48.png",
-            "sizes": "48x48",
+            "src": "images/icon-192.png",
+            "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "images/touch/homescreen72.png",
-            "sizes": "72x72",
+            "src": "images/icon-256.png",
+            "sizes": "256x256",
             "type": "image/png"
         },
         {
-            "src": "images/touch/homescreen96.png",
-            "sizes": "96x96",
-            "type": "image/png"
-        },
-        {
-            "src": "images/touch/homescreen144.png",
-            "sizes": "144x144",
-            "type": "image/png"
-        },
-        {
-            "src": "images/touch/homescreen168.png",
-            "sizes": "168x168",
-            "type": "image/png"
-        },
-        {
-            "src": "images/touch/homescreen192.png",
+            "src": "images/icon-192.png",
             "sizes": "192x192",
             "type": "image/png"
         }
