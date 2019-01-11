@@ -14,7 +14,7 @@
     <body>
         <main>
             <section id="timer" class="active">
-                <nav role="navigation" aria-label="main navigation">
+                <nav role="navigation">
                     <a href="#" class="brand">FMBQ Timer</a>
 
                     <a class="right" href="#settings" title="Settings">
@@ -26,7 +26,7 @@
                 </nav>
 
                 <div class="countdown-display">
-                    <svg viewBox="0 0 100 100">
+                    <svg viewBox="0 0 100 100" onclick="app.startTimer(20)">
                         <circle class="countdown-circle" cx="50" cy="50" r="45" fill="none" stroke="currentColor" transform="rotate(-90, 50, 50)" stroke-dasharray="300 300"></circle>
                         <text class="countdown-text" x="50" y="50" style="font-size: 32px" fill="currentColor" dominant-baseline="central">0.0</text>
                     </svg>
@@ -38,14 +38,16 @@
                     </button>
                 </div>
 
-                <button onclick="app.startTimer(app.settings.answerDuration)">Answer</button>
-                <button onclick="app.startTimer(app.settings.prejumpDuration)">Prejump</button>
-                <button onclick="app.startTimer(app.settings.appealDuration)">Appeal</button>
-                <button onclick="app.startTimer(app.settings.timeoutDuration)">Time out</button>
+                <div class="countdown-buttons">
+                    <button class="big success" onclick="app.startTimer(20)">Answer</button>
+                    <button class="big" onclick="app.startTimer(20)">Prejump</button>
+                    <button onclick="app.startTimer(30)">Appeal</button>
+                    <button onclick="app.startTimer(60)">Time out</button>
+                </div>
             </section>
 
             <section id="settings">
-                <nav role="navigation" aria-label="main navigation">
+                <nav role="navigation">
                     <a href="#" onclick="history.back()">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M19 11h-11.6l5.3-5.3c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-7 7c-0.1 0.1-0.2 0.2-0.2 0.3-0.1 0.2-0.1 0.5 0 0.8 0.1 0.1 0.1 0.2 0.2 0.3l7 7c0.2 0.2 0.5 0.3 0.7 0.3s0.5-0.1 0.7-0.3c0.4-0.4 0.4-1 0-1.4l-5.3-5.3h11.6c0.6 0 1-0.4 1-1s-0.4-1-1-1z"></path>
@@ -53,41 +55,33 @@
                     </a>
                 </nav>
 
-                <div class="setting">
+                <div>
                     <label>Theme</label>
-                    <select onchange="app.setTheme(this.value)">
+                    <select id="setting-theme" onchange="app.setTheme(this.value)">
                         <option value="light">Light</option>
                         <option value="dark">Dark</option>
                         <option value="joyful">Joyful</option>
                     </select>
                 </div>
 
-                <div class="setting">
+                <div>
                     <label>Alarm sound</label>
-                    <select id="sounds-select-box"></select>
+                    <select id="setting-timer-sound" onchange="app.setTimerSound(this.value)">
+                        <option value="bugaboo">Bugaboo</option>
+                        <option value="bumptious">Bumptious</option>
+                        <option value="correct">Correct</option>
+                        <option value="fanta">Fanta</option>
+                        <option value="foofaraw">Foofaraw</option>
+                        <option value="ludic">Ludic</option>
+                        <option value="tizzy">Tizzy</option>
+                        <option value="unctuous">Unctuous</option>
+                    </select>
                 </div>
 
-                <div class="setting">
-                    <label><input type="number" placeholder="Answer duration"></label>
-                </div>
-
-                <div class="setting">
-                    <label><input type="number" placeholder="Appeal duration"></label>
-                </div>
-
-                <div class="setting">
-                    <label><input type="number" placeholder="Time out duration"></label>
-                </div>
-
-                <div class="setting">
-                    <button onclick="app.install()">
-                        Install
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M21 14c-0.6 0-1 0.4-1 1v4c0 0.6-0.4 1-1 1h-14c-0.6 0-1-0.4-1-1v-4c0-0.6-0.4-1-1-1s-1 0.4-1 1v4c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3v-4c0-0.6-0.4-1-1-1z"></path>
-                            <path d="M11.3 15.7c0.1 0.1 0.2 0.2 0.3 0.2 0.1 0.1 0.3 0.1 0.4 0.1s0.3 0 0.4-0.1c0.1-0.1 0.2-0.1 0.3-0.2l5-5c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-3.3 3.3v-9.6c0-0.6-0.4-1-1-1s-1 0.4-1 1v9.6l-3.3-3.3c-0.4-0.4-1-0.4-1.4 0s-0.4 1 0 1.4l5 5z"></path>
-                        </svg>
-                    </button>
-                </div>
+                <label>
+                    <input id="setting-offline" type="checkbox">
+                    <span class="checkable">Offline</span>
+                </label>
             </section>
         </main>
     </body>

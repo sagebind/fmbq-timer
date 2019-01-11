@@ -23,7 +23,7 @@ body {
 }
 
 main {
-    padding-top: 3rem;
+    margin-top: 3rem;
 }
 
 main > section {
@@ -74,8 +74,24 @@ button.round {
     border-radius: 3rem;
 }
 
-input, textarea, select {
+button, input, textarea, select {
     color: inherit;
+    outline: none;
+}
+
+.checkable {
+    display: block;
+    padding: 0 !important;
+}
+
+.checkable::before {
+    color: inherit !important;
+    background-color: currentColor;
+}
+
+.checkable::before, .checkable::after {
+    left: unset !important;
+    right: 0;
 }
 
 .icon {
@@ -88,15 +104,20 @@ input, textarea, select {
     fill: currentColor;
 }
 
+.countdown-display, .countdown-buttons {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
 .countdown-display {
     position: relative;
-    margin: 1rem;
 }
 
 .countdown-display > svg {
     display: block;
-    margin: 0 auto;
     max-height: 50vh;
+    margin: 0 auto;
 }
 
 .countdown-circle {
@@ -110,17 +131,34 @@ input, textarea, select {
 .countdown-display .reset-button {
     display: block;
     position: absolute;
+    visibility: hidden;
     right: 1rem;
     bottom: 1rem;
     opacity: 0;
 }
 
 body.timer-active .countdown-display .reset-button {
+    visibility: visible;
     opacity: 1;
 }
 
-.setting {
+.countdown-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.countdown-buttons > * {
+    flex-grow: 1;
+    margin: 0.5rem;
+}
+
+.countdown-buttons > .big {
+    width: 100%;
+    padding: 1rem;
+}
+
+#settings > :not(nav) {
     display: block;
     padding: 1rem;
-    border-bottom: 0.1rem solid black;
+    border-bottom: 0.1rem solid rgba(0, 0, 0, 0.25);
 }

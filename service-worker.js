@@ -7,7 +7,17 @@ self.addEventListener("install", function (event) {
                 "app.css",
                 "app.js",
                 "picnic.min.css",
-                "service-worker.js",
+                "sounds/bugaboo.wav",
+                "sounds/bumptious.wav",
+                "sounds/correct.wav",
+                "sounds/fanta.wav",
+                "sounds/foofaraw.wav",
+                "sounds/ludic.wav",
+                "sounds/tizzy.wav",
+                "sounds/unctuous.wav",
+                "themes/dark.css",
+                "themes/joyful.css",
+                "themes/light.css",
             ]);
         })
     );
@@ -15,13 +25,13 @@ self.addEventListener("install", function (event) {
 
 self.addEventListener("fetch", function (event) {
     event.respondWith(
-        caches.open("static").then(function (cache) {
-            return cache.match(event.request).then(function (response) {
-                return response || fetch(event.request).then(function (response) {
-                    cache.put(event.request, response.clone());
-                    return response;
-                });
+        fetch(event.request).then(function (response) {
+            return caches.open("static").then(function (cache) {
+                cache.put(event.request, response.clone());
+                return response;
             });
+        }).catch(function () {
+            return caches.match(event.request);
         })
     );
 });
