@@ -7,6 +7,10 @@ body.ready, body.ready * {
     transition-duration: 0.2s !important;
 }
 
+[v-cloak] {
+    display: none;
+}
+
 html, body {
     min-height: 100%;
 
@@ -68,6 +72,11 @@ nav > * {
     outline: none;
 }
 
+.small-text {
+    font-size: 0.8em;
+    opacity: 0.5;
+}
+
 button.round {
     width: 3rem;
     height: 3rem;
@@ -92,6 +101,10 @@ button, input, textarea, select {
 .checkable::before, .checkable::after {
     left: unset !important;
     right: 0;
+}
+
+.hidden {
+    display: none;
 }
 
 .icon {
@@ -137,7 +150,7 @@ button, input, textarea, select {
     opacity: 0;
 }
 
-body.timer-active .countdown-display .reset-button {
+.countdown-display .reset-button.active {
     visibility: visible;
     opacity: 1;
 }
