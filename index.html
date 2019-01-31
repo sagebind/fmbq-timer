@@ -33,7 +33,7 @@
                 </nav>
 
                 <div class="countdown-display">
-                    <svg viewBox="0 0 100 100" onclick="app.startTimer(20)">
+                    <svg viewBox="0 0 100 100" v-on:click="startTimer(20)">
                         <circle class="countdown-circle" cx="50" cy="50" r="45" fill="none" stroke="currentColor" transform="rotate(-90, 50, 50)" stroke-dasharray="300 300" v-bind:stroke-dasharray="countdownCircleStyle"></circle>
                         <text class="countdown-text" x="50" y="50" style="font-size: 32px" fill="currentColor" dominant-baseline="central" v-cloak>{{timerText}}</text>
                     </svg>
@@ -89,7 +89,7 @@
                     <button v-on:click="install" v-bind:disabled="!installPrompt || installed">Install offline</button>
                     <br/>
                     <span class="small-text" v-bind:class="{ hidden: !!installPrompt || installed }">Install not available for your device or browser, sorry.</span>
-                    <span class="small-text" class="hidden" v-bind:class="{ hidden: !installed }">App already installed. Yay!</span>
+                    <span class="small-text" class="hidden" v-bind:class="{ hidden: !installed }">App is installed. Yay!</span>
                 </div>
             </section>
         </main>

@@ -94,7 +94,13 @@ window.app = new Vue({
             } else if (!this.installPrompt) {
                 alert("Install is not supported on your device.");
             } else {
-                (this.installPrompt)();
+                this.installPrompt.prompt();
+                this.installPrompt.userChoice.then(function (result) {
+                    if (result.outcome === "accepted") {
+                        app.installed = true;
+                    }
+                    app.installPrompt = null;
+                });
             }
         },
 
@@ -163,7 +169,7 @@ window.addEventListener("hashchange", app.showCurrentPage);
 
 window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault();
-    app.installPrompt = e.prompt;
+    app.installPrompt = e;
 });
 
 window.addEventListener("appinstalled", function () {
