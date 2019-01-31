@@ -7,7 +7,7 @@
     "display": "standalone",
     "background_color": "#333",
     "theme_color": "#03a9fa",
-    "description": "Timer app tailored Free Methodist Bible Quizzing.",
+    "description": "Timer app tailored for Free Methodist Bible Quizzing.",
     "icons": [
         {
             "src": "images/icon-120.png",
