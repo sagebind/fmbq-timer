@@ -1,6 +1,6 @@
 {
     "name": "FMBQ Timer",
-    "short_name": "FMBQ Timer",
+    "short_name": "FMBQTimer",
     "lang" : "English",
     "start_url": ".",
     "scope" : ".",
@@ -9,6 +9,26 @@
     "theme_color": "#03a9fa",
     "description": "Timer app tailored Free Methodist Bible Quizzing.",
     "icons": [
+        {
+            "src": "images/icon-120.png",
+            "sizes": "120x120",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icon-152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icon-167.png",
+            "sizes": "167x167",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icon-180.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
         {
             "src": "images/icon-192.png",
             "sizes": "192x192",
@@ -20,8 +40,8 @@
             "type": "image/png"
         },
         {
-            "src": "images/icon-192.png",
-            "sizes": "192x192",
+            "src": "images/icon-512.png",
+            "sizes": "512x512",
             "type": "image/png"
         }
     ]

@@ -88,7 +88,7 @@
                 <div>
                     <button v-on:click="install" v-bind:disabled="!installPrompt || installed">Install offline</button>
                     <br/>
-                    <span class="small-text" v-bind:class="{ hidden: !!installPrompt && !installed }">Install not available for your device or browser, sorry.</span>
+                    <span class="small-text" v-bind:class="{ hidden: !!installPrompt || installed }">Install not available for your device or browser, sorry.</span>
                     <span class="small-text" class="hidden" v-bind:class="{ hidden: !installed }">App already installed. Yay!</span>
                 </div>
             </section>
