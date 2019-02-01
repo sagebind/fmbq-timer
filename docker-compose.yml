@@ -2,5 +2,5 @@ version: '3.6'
 
 services:
   fmbq-timer:
-    image: cloud.canister.io:5000/sagebind/fmbq-timer:0.1.0
+    image: cloud.canister.io:5000/sagebind/fmbq-timer:0.1.1
     build: .

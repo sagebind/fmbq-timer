@@ -104,6 +104,16 @@ window.app = new Vue({
             }
         },
 
+        update: function () {
+            if ("caches" in window) {
+                caches.delete("static").then(function () {
+                    window.location.reload();
+                });
+            } else {
+                window.location.reload();
+            }
+        },
+
         startTimer: function (seconds) {
             this.timer.startTime = performance.now();
             this.timer.endTime = this.timer.startTime + (seconds * 1000);
