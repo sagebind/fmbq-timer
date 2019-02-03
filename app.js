@@ -19,204 +19,55 @@ var state = {
     timerText: function () {
         return (state.timer.remaining / 1000).toFixed(1);
     },
+
+    timerTotal: function () {
+        return state.timer.endTime - state.timer.startTime;
+    },
+
+    countdownCircleStyle: function () {
+        if (state.timer.active) {
+            var fraction = state.timer.remaining / state.timerTotal();
+            return (90 * Math.PI * fraction) + " 300";
+        }
+
+        return "300 300";
+    },
 };
-
-// window.app = new Vue({
-//     el: "main",
-
-//     data: function () {
-//         var settings = {
-//             theme: "light",
-//             timerSound: "tizzy",
-//         };
-
-//         var json = localStorage.getItem("settings");
-//         if (json) {
-//             Object.assign(settings, JSON.parse(json));
-//         }
-
-//         return {
-//             currentPage: "timer",
-//             installed: false,
-//             installPrompt: null,
-//             interval: 0,
-//             settings: settings,
-//             timer: {
-//                 active: false,
-//                 startTime: 0,
-//                 endTime: 0,
-//                 remaining: 0,
-//             },
-//         };
-//     },
-
-//     computed: {
-//         timerText: function () {
-//             return (this.timer.remaining / 1000).toFixed(1);
-//         },
-
-//         timerTotal: function () {
-//             return this.timer.endTime - this.timer.startTime;
-//         },
-
-//         countdownCircleStyle: function () {
-//             if (this.timer.active) {
-//                 var fraction = this.timer.remaining / this.timerTotal;
-//                 return (90 * Math.PI * fraction) + " 300";
-//             }
-
-//             return "300 300";
-//         },
-//     },
-
-//     watch: {
-//         currentPage: function (name) {
-//             document.querySelectorAll("main > section").forEach(function (page) {
-//                 if (page.id === name) {
-//                     page.classList.add("active");
-//                 } else {
-//                     page.classList.remove("active");
-//                 }
-//             });
-
-//             window.scrollTo(0, 0);
-//         },
-
-//         // Save settings automatically on change.
-//         settings: {
-//             deep: true,
-//             handler: function (settings) {
-//                 localStorage.setItem("settings", JSON.stringify(settings));
-//             },
-//         },
-
-//         "settings.theme": {
-//             immediate: true,
-//             handler: function (theme) {
-//                 document.getElementById("theme").href = "themes/" + theme + ".css";
-//             },
-//         },
-
-//         "settings.timerSound": {
-//             immediate: true,
-//             handler: function (newValue, oldValue) {
-//                 audio.src = "sounds/" + newValue + ".wav";
-//                 if (oldValue) {
-//                     this.playTimerSound();
-//                 }
-//             },
-//         },
-//     },
-
-//     methods: {
-//         install: function () {
-//             if (this.installed) {
-//                 alert("App is already installed!");
-//             } else if (!this.installPrompt) {
-//                 alert("Install is not supported on your device.");
-//             } else {
-//                 this.installPrompt.prompt();
-//                 this.installPrompt.userChoice.then(function (result) {
-//                     if (result.outcome === "accepted") {
-//                         app.installed = true;
-//                     }
-//                     app.installPrompt = null;
-//                 });
-//             }
-//         },
-
-//         update: function () {
-//             if ("caches" in window) {
-//                 caches.delete("static").then(function () {
-//                     window.location.reload();
-//                 });
-//             } else {
-//                 window.location.reload();
-//             }
-//         },
-
-//         startTimer: function (seconds) {
-//             this.timer.startTime = performance.now();
-//             this.timer.endTime = this.timer.startTime + (seconds * 1000);
-//             this.timer.active = true;
-//         },
-
-//         cancelTimer: function () {
-//             this.timer.active = false;
-//             this.timer.remaining = 0;
-//         },
-
-//         playTimerSound: function () {
-//             audio.currentTime = 0;
-//             audio.play();
-//         },
-
-//         tick: function () {
-//             if (this.timer.active) {
-//                 var remaining = Math.max(0, this.timer.endTime - performance.now());
-//                 this.timer.remaining = remaining;
-
-//                 if (remaining <= 0) {
-//                     this.timer.active = false;
-//                     this.playTimerSound();
-//                 }
-//             }
-//         },
-
-//         showCurrentPage: function () {
-//             if (location.hash.length > 1) {
-//                 this.currentPage = location.hash.substring(1);
-//             } else {
-//                 this.currentPage = "timer";
-//             }
-//         },
-//     },
-
-//     created: function () {
-//         // Set up offline cache handling.
-//         if ("serviceWorker" in navigator) {
-//             navigator.serviceWorker.register("service-worker.js");
-//         }
-
-//         this.showCurrentPage();
-
-//         if (window.matchMedia("(display-mode: standalone)").matches) {
-//             this.installed = true;
-//         }
-
-//         this.interval = setInterval(this.tick, 50);
-
-//         setTimeout(function () {
-//             document.body.classList.add("ready");
-//         }, 100);
-//     },
-
-//     beforeDestroy: function () {
-//         clearInterval(this.interval);
-//     },
-// });
-
-// window.addEventListener("hashchange", app.showCurrentPage);
-
-// window.addEventListener("beforeinstallprompt", function (e) {
-//     e.preventDefault();
-//     app.installPrompt = e;
-// });
-
-// window.addEventListener("appinstalled", function () {
-//     app.installed = true;
-// });
-
 
 var App = {
     saveSettings: function () {
         localStorage.setItem("settings", JSON.stringify(settings));
     },
 
+    install: function () {
+        if (state.installed) {
+            alert("App is already installed!");
+        } else if (!state.installPrompt) {
+            alert("Install is not supported on your device.");
+        } else {
+            state.installPrompt.prompt();
+            state.installPrompt.userChoice.then(function (result) {
+                if (result.outcome === "accepted") {
+                    state.installed = true;
+                }
+                state.installPrompt = null;
+            });
+        }
+    },
+
+    update: function () {
+        if ("caches" in window) {
+            caches.delete("static").then(function () {
+                window.location.reload();
+            });
+        } else {
+            window.location.reload();
+        }
+    },
+
     setTheme: function (theme) {
         settings.theme = theme;
         document.getElementById("theme").href = "themes/" + theme + ".css";
-        App.saveSettings();
     },
 
     setTimerSound: function (name) {
@@ -250,6 +101,13 @@ var App = {
         if (json) {
             Object.assign(settings, JSON.parse(json));
         }
+
+        if (window.matchMedia("(display-mode: standalone)").matches) {
+            state.installed = true;
+        }
+
+        App.setTheme(settings.theme);
+        App.setTimerSound(settings.timerSound);
 
         setInterval(function () {
             if (state.timer.active) {
@@ -329,7 +187,7 @@ var MainPage = {
                             fill: "none",
                             stroke: "currentColor",
                             transform: "rotate(-90, 50, 50)",
-                            "stroke-dasharray": "300 300",
+                            "stroke-dasharray": state.countdownCircleStyle(),
                         }),
                         m("text.countdown-text", {
                             x: 50,
@@ -403,6 +261,7 @@ var SettingsPage = {
                         value: settings.theme,
                         onchange: function (e) {
                             App.setTheme(e.target.value);
+                            App.saveSettings();
                         },
                     }, [
                         m("option", {
@@ -423,6 +282,8 @@ var SettingsPage = {
                         value: settings.timerSound,
                         onchange: function (e) {
                             App.setTimerSound(e.target.value);
+                            App.playTimerSound();
+                            App.saveSettings();
                         },
                     }, [
                         m("option", {
@@ -453,20 +314,32 @@ var SettingsPage = {
                 ]),
 
                 m("div", [
-                    m("button", {}, "Install offline"),
+                    m("button", {
+                        disabled: !state.installPrompt || state.installed,
+                        onclick: App.install,
+                    }, "Install offline"),
                     m("br"),
-                    m("span.small-text", "Install not available for your device or browser, sorry."),
-                    m("span.small-text", "App is installed. Yay!"),
+                    m("span.small-text", {class: !!state.installPrompt || state.installed ? "hidden" : ""}, "Install not available for your device or browser, sorry."),
+                    m("span.small-text", {class: !state.installed ? "hidden" : ""}, "App is installed. Yay!"),
                 ]),
 
                 m("div", [
-                    m("button", "Self update"),
+                    m("button", {onclick: App.update}, "Self update"),
                 ]),
 
                 m("div", [
-                    m("span.small-text", "Version 0.1.1"),
+                    m("span.small-text", "Version 0.2.0"),
                 ]),
             ]),
         ];
     }
 };
+
+window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    state.installPrompt = e;
+});
+
+window.addEventListener("appinstalled", function () {
+    state.installed = true;
+});
