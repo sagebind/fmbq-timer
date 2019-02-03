@@ -6,6 +6,7 @@ self.addEventListener("install", function (event) {
                 "index.html",
                 "app.css",
                 "app.js",
+                "https://unpkg.com/mithril@1.1.6/mithril.js",
                 "vendor/picnic.min.css",
                 "vendor/vue.min.js",
                 "sounds/bugaboo.wav",

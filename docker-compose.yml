@@ -4,3 +4,10 @@ services:
   fmbq-timer:
     image: cloud.canister.io:5000/sagebind/fmbq-timer:0.1.1
     build: .
+
+  local:
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - .:/usr/share/nginx/html

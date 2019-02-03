@@ -8,18 +8,19 @@
         <link rel="manifest" href="timer.webmanifest">
         <link rel="stylesheet" href="vendor/picnic.min.css">
         <link rel="stylesheet" href="app.css">
-        <link id="theme" rel="stylesheet" href="themes/light.css">
+        <link id="theme" rel="stylesheet" href="themes/dark.css">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-120.png">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-152.png">
         <link rel="apple-touch-icon" sizes="167x167" href="images/icon-167.png">
         <link rel="apple-touch-icon" sizes="180x180" href="images/icon-180.png">
 
-        <script src="vendor/vue.min.js" defer></script>
-        <script src="app.js" defer></script>
+        <script src="vendor/vue.min.js"></script>
+        <script src="app.js"></script>
+        <script src="https://unpkg.com/mithril@1.1.6/mithril.min.js"></script>
     </head>
 
     <body>
-        <main>
+        <!-- <main>
             <section id="timer" class="active">
                 <nav role="navigation">
                     <a href="#" class="brand">FMBQ Timer</a>
@@ -100,6 +101,8 @@
                     <span class="small-text">Version 0.1.1.</span>
                 </div>
             </section>
-        </main>
+        </main> -->
+
+        <script>App.init();</script>
     </body>
 </html>

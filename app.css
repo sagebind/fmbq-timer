@@ -23,14 +23,17 @@ html, body {
 }
 
 body {
-    transition-property: background, color;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition-property: background, color, opacity;
 }
 
 main {
-    padding-top: 3rem;
+    transition-property: opacity;
 }
 
-main > section {
+section {
     display: block;
     position: absolute;
     left: 0;
@@ -40,29 +43,32 @@ main > section {
     transition-property: opacity;
 }
 
-main > section.active {
+section.active {
     opacity: 1;
     z-index: 1;
 }
 
-nav {
+header {
     display: flex;
     align-items: stretch;
     vertical-align: middle;
     justify-content: space-between;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 3rem;
     padding: 0;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 }
 
-nav .icon {
+header .icon {
     font-size: 1.5rem;
 }
 
-nav a {
+header a {
     color: inherit;
 }
 
-nav > * {
+header > * {
     display: flex;
     align-items: center;
     padding: 0 1rem;
@@ -70,6 +76,11 @@ nav > * {
     border-bottom: 0.2rem solid transparent;
     transition-property: all;
     outline: none;
+}
+
+main {
+    flex-grow: 1;
+    overflow: auto;
 }
 
 .small-text {
@@ -117,31 +128,43 @@ button, input, textarea, select {
     fill: currentColor;
 }
 
-.countdown-display, .countdown-buttons {
+#timer {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 101vh) {
+    #timer {
+        flex-direction: row;
+    }
+}
+
+#timer .countdown-display, .countdown-buttons {
     max-width: 56rem;
     margin: 0 auto;
     padding: 1rem;
 }
 
-.countdown-display {
+#timer .countdown-display {
     position: relative;
+    min-width: 50vw;
 }
 
-.countdown-display > svg {
+#timer .countdown-display > svg {
     display: block;
     max-height: 50vh;
     margin: 0 auto;
 }
 
-.countdown-circle {
+#timer .countdown-circle {
     transition-property: stroke-dasharray;
 }
 
-.countdown-text {
+#timer .countdown-text {
     text-anchor: middle;
 }
 
-.countdown-display .reset-button {
+#timer .countdown-display .reset-button {
     display: block;
     position: absolute;
     visibility: hidden;
@@ -150,22 +173,22 @@ button, input, textarea, select {
     opacity: 0;
 }
 
-.countdown-display .reset-button.active {
+#timer .countdown-display .reset-button.active {
     visibility: visible;
     opacity: 1;
 }
 
-.countdown-buttons {
+#timer .countdown-buttons {
     display: flex;
     flex-wrap: wrap;
 }
 
-.countdown-buttons > * {
+#timer .countdown-buttons > * {
     flex-grow: 1;
     margin: 0.5rem;
 }
 
-.countdown-buttons > .big {
+#timer .countdown-buttons > .big {
     width: 100%;
     padding: 1rem;
 }
