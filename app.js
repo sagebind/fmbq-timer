@@ -17,7 +17,7 @@ var state = {
     },
 
     timerText: function () {
-        return (state.timer.remaining / 1000).toFixed(1);
+        return (Math.floor(state.timer.remaining / 100) / 10).toString();
     },
 
     timerTotal: function () {
