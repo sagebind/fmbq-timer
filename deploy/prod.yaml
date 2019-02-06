@@ -1,0 +1,17 @@
+version: '3.6'
+
+services:
+  web:
+    image: repo.treescale.com/sagebind/fmbq-timer:alpha
+    networks:
+      - traefik
+    deploy:
+      labels:
+        traefik.port: 80
+        traefik.docker.network: traefik
+        traefik.frontend.rule: "Host: fmbq-timer.stephencoakley.com"
+
+networks:
+  traefik:
+    external: true
+    name: traefik
