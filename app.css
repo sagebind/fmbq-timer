@@ -171,6 +171,7 @@ button, input, textarea, select {
     visibility: hidden;
     right: 1rem;
     bottom: 1rem;
+    transform: scale(1.5);
     opacity: 0;
 }
 

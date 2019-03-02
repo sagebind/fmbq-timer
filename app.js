@@ -328,7 +328,7 @@ var SettingsPage = {
                 ]),
 
                 m("div", [
-                    m("span.small-text", "Version 0.2.0"),
+                    m("span.small-text", "Version 0.2.1"),
                 ]),
             ]),
         ];
