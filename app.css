@@ -149,6 +149,7 @@ button, input, textarea, select {
 
 #timer .countdown-display {
     position: relative;
+    align-self: stretch;
     flex-grow: 2;
 }
 

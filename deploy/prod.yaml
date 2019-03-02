@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   web:
-    image: repo.treescale.com/sagebind/fmbq-timer:alpha
+    image: repo.treescale.com/sagebind/fmbq-timer:0.2.2
     networks:
       - traefik
     deploy:
