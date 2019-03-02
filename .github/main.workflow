@@ -30,7 +30,7 @@ action "Push image" {
 }
 
 action "Deploy to swarm" {
-  uses = "sagebind/actions/remote-docker@master"
+  uses = "sagebind/docker-swarm-deploy-action@master"
   needs = ["Push image"]
   secrets = ["DOCKER_REMOTE_HOST", "DOCKER_SSH_PRIVATE_KEY", "DOCKER_SSH_PUBLIC_KEY"]
   args = "stack deploy --with-registry-auth --prune --compose-file deploy/prod.yaml fmbq-timer"
