@@ -1,20 +1,22 @@
 TSC_FLAGS := --target ES2015 --module system
+STATIC_FILES := $(shell find static -type f)
 
 
 .PHONY: build
-build: dist dist/app.js dist/service-worker.js
-	cp timer.webmanifest dist/
-	cp app.css dist/
-	cp index.html dist/
-	cp -r images dist/
-	cp -r sounds dist/
+build: dist/app.js dist/service-worker.js $(STATIC_FILES:static/%=dist/%)
+
+.PHONY: open
+open: build
+	open dist/index.html
 
 .PHONY: clean
 clean:
 	-rm -r dist
 
-dist:
-	-mkdir $@
+dist/%.js: src/%.ts src/*.ts
+	@mkdir -p $(dir $@)
+	tsc $(TSC_FLAGS) --outFile $@ $<
 
-dist/%.js: src/%.ts $(wildcard src/*.ts) dist
-	tsc $(TSC_FLAGS) --outFile $@ $%
+dist/%: static/%
+	@mkdir -p $(dir $@)
+	cp $< $@

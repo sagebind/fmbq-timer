@@ -196,7 +196,7 @@ export var SettingsPage = {
                 ]),
 
                 m("div", [
-                    m("span.small-text", "Version 0.2.2"),
+                    m("span.small-text", "Version 0.3.0"),
                 ]),
             ]),
         ];
