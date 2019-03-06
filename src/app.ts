@@ -86,7 +86,7 @@ export var App = {
     init: function () {
         // Set up offline cache handling.
         if ("serviceWorker" in navigator) {
-            // navigator.serviceWorker.register("service-worker.js");
+            navigator.serviceWorker.register("service-worker.js");
         }
 
         var json = localStorage.getItem("settings");

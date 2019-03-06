@@ -1,14 +1,14 @@
-self.addEventListener("install", function (event) {
+self.addEventListener("install", (event: any) => {
     event.waitUntil(
-        caches.open("static").then(function (cache) {
+        caches.open("static").then((cache) => {
             return cache.addAll([
                 ".",
                 "index.html",
                 "app.css",
                 "app.js",
                 "https://unpkg.com/mithril@1.1.6/mithril.js",
-                "vendor/picnic.min.css",
-                "vendor/vue.min.js",
+                "https://unpkg.com/picnic@6.5.0/picnic.min.css",
+                "https://unpkg.com/systemjs@0.21.6/dist/system.js",
                 "sounds/bugaboo.wav",
                 "sounds/bumptious.wav",
                 "sounds/correct.wav",
@@ -17,22 +17,19 @@ self.addEventListener("install", function (event) {
                 "sounds/ludic.wav",
                 "sounds/tizzy.wav",
                 "sounds/unctuous.wav",
-                "themes/dark.css",
-                "themes/joyful.css",
-                "themes/light.css",
             ]);
         })
     );
 });
 
-self.addEventListener("fetch", function (event) {
+self.addEventListener("fetch", (event: any) => {
     event.respondWith(
-        fetch(event.request).then(function (response) {
+        fetch(event.request).then((response) => {
             return caches.open("static").then(function (cache) {
                 cache.put(event.request, response.clone());
                 return response;
             });
-        }).catch(function () {
+        }).catch(() => {
             return caches.match(event.request);
         })
     );

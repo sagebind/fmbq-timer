@@ -1,4 +1,1 @@
-.cache
-app.js
-dist
-node_modules
+/dist

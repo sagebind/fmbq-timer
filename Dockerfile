@@ -3,4 +3,4 @@ COPY . /app
 RUN make
 
 FROM nginx
-COPY --from=0 /app /usr/share/nginx/html
+COPY --from=0 /app/dist /usr/share/nginx/html
