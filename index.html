@@ -8,17 +8,19 @@
         <link rel="manifest" href="timer.webmanifest">
         <link rel="stylesheet" href="vendor/picnic.min.css">
         <link rel="stylesheet" href="app.css">
-        <link id="theme" rel="stylesheet" href="themes/light.css">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-120.png">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-152.png">
         <link rel="apple-touch-icon" sizes="167x167" href="images/icon-167.png">
         <link rel="apple-touch-icon" sizes="180x180" href="images/icon-180.png">
 
-        <script src="app.js"></script>
+        <script src="https://unpkg.com/systemjs@0.21.6/dist/system.js"></script>
         <script src="https://unpkg.com/mithril@1.1.6/mithril.min.js"></script>
+        <script src="app.js"></script>
     </head>
 
     <body>
-        <script>App.init();</script>
+        <script>
+            System.import("app").then(null, console.error.bind(console));
+        </script>
     </body>
 </html>
