@@ -1,6 +1,6 @@
 self.addEventListener("install", (event: any) => {
     event.waitUntil(
-        caches.open("static").then((cache) => {
+        caches.open("static").then(cache => {
             return cache.addAll([
                 ".",
                 "index.html",
@@ -24,13 +24,13 @@ self.addEventListener("install", (event: any) => {
 
 self.addEventListener("fetch", (event: any) => {
     event.respondWith(
-        fetch(event.request).then((response) => {
-            return caches.open("static").then(function (cache) {
-                cache.put(event.request, response.clone());
-                return response;
-            });
-        }).catch(() => {
-            return caches.match(event.request);
-        })
+        caches.open("static").then(cache => cache.match(event.request)
+            .catch(() => fetch(event.request)
+                .then(response => {
+                    cache.put(event.request, response.clone());
+                    return response;
+                })
+            )
+        )
     );
 });
