@@ -1,9 +1,11 @@
-import {settings} from './settings';
-import {state} from './state';
+import * as app from "./app";
+import * as audio from "./audio";
+import settings from "./settings";
+import state from "./state";
 
 
 declare var m: any;
-declare var App: any;
+
 
 export var MainPage = {
     view: function () {
@@ -44,14 +46,14 @@ var CountdownDisplay = {
         return "300 300";
     },
 
-    view: function (vnode) {
+    view: function () {
         var timerText = (state.timer.remaining / 1000).toFixed(1);
 
         return m(".countdown-display", [
             m("svg", {
                 viewBox: "0 0 100 100",
                 onclick: function () {
-                    App.startTimer(20);
+                    app.startTimer(20);
                 },
             }, [
                 m("circle.countdown-circle", {
@@ -82,7 +84,7 @@ var ResetButton = {
     view: function (vnode) {
         return m("button.round.reset-button.warning[title=Cancel]", {
             class: vnode.attrs.disabled ? "" : "active",
-            onclick: App.cancelTimer,
+            onclick: app.cancelTimer,
         }, [
             m("svg.icon[viewBox='0 0 24 24']", [
                 m("path", {
@@ -98,22 +100,22 @@ var CountdownButtons = {
         return m(".countdown-buttons", [
             m("button.big.success", {
                 onclick: function () {
-                    App.startTimer(20);
+                    app.startTimer(20);
                 }
             }, "Answer"),
             m("button.big", {
                 onclick: function () {
-                    App.startTimer(20);
+                    app.startTimer(20);
                 }
             }, "Prejump"),
             m("button", {
                 onclick: function () {
-                    App.startTimer(30);
+                    app.startTimer(30);
                 }
             }, "Appeal"),
             m("button", {
                 onclick: function () {
-                    App.startTimer(60);
+                    app.startTimer(60);
                 }
             }, "Time out"),
         ]);
@@ -143,9 +145,9 @@ export var SettingsPage = {
                     m("select", {
                         value: settings.timerSound,
                         onchange: function (e) {
-                            App.setTimerSound(e.target.value);
-                            App.playTimerSound();
-                            App.saveSettings();
+                            settings.timerSound = e.target.value;
+                            audio.play(settings.timerSound);
+                            settings.save();
                         },
                     }, [
                         m("option", {
@@ -176,9 +178,13 @@ export var SettingsPage = {
                 ]),
 
                 m("div", [
+                    m("button", { onclick: settings.reset }, "Reset settings"),
+                ]),
+
+                m("div", [
                     m("button", {
                         disabled: !state.installPrompt || state.installed,
-                        onclick: App.install,
+                        onclick: app.install,
                     }, "Install offline"),
                     m("br"),
                     m("span.small-text", { class: !!state.installPrompt || state.installed ? "hidden" : "" }, "Install not available for your device or browser, sorry."),
@@ -186,7 +192,7 @@ export var SettingsPage = {
                 ]),
 
                 m("div", [
-                    m("button", { onclick: App.update }, "Self update"),
+                    m("button", { onclick: app.update }, "Self update"),
                 ]),
 
                 m("div", [

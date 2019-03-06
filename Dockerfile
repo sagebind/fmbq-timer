@@ -1,6 +1,6 @@
 FROM sandrokeil/typescript
 COPY . /app
-RUN make
+RUN make && mv dist /dist
 
 FROM nginx
-COPY --from=0 /app/dist /usr/share/nginx/html
+COPY --from=0 /dist /usr/share/nginx/html

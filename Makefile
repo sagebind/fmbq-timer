@@ -2,7 +2,7 @@ TSC_FLAGS := --target ES2015 --module system
 
 
 .PHONY: build
-build: dist/app.js dist/service-worker.js
+build: dist dist/app.js dist/service-worker.js
 	cp timer.webmanifest dist/
 	cp app.css dist/
 	cp index.html dist/
@@ -13,5 +13,8 @@ build: dist/app.js dist/service-worker.js
 clean:
 	-rm -r dist
 
-dist/%.js: src/%.ts
-	tsc $(TSC_FLAGS) --outFile $@ $^
+dist:
+	-mkdir $@
+
+dist/%.js: src/%.ts $(wildcard src/*.ts) dist
+	tsc $(TSC_FLAGS) --outFile $@ $%

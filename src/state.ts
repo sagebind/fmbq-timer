@@ -1,4 +1,4 @@
-export var state = {
+export let state = {
     installed: false,
     installPrompt: null,
     interval: 0,
@@ -9,3 +9,5 @@ export var state = {
         remaining: 0,
     },
 };
+
+export default state;
