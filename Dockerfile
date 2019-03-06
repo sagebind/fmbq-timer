@@ -1,2 +1,6 @@
+FROM sandrokeil/typescript
+COPY . /app
+RUN make
+
 FROM nginx
-COPY . /usr/share/nginx/html
+COPY --from=0 /app /usr/share/nginx/html

@@ -4,10 +4,5 @@ services:
   fmbq-timer:
     image: repo.treescale.com/sagebind/fmbq-timer:0.2.2
     build: .
-
-  local:
-    image: nginx
     ports:
       - 8000:80
-    volumes:
-      - .:/usr/share/nginx/html
