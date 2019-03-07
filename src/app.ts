@@ -78,11 +78,6 @@ function init() {
         state.installed = true;
     }
 
-    // Force recalculate layout after a resize (such as device rotation).
-    window.addEventListener("resize", () => {
-        document.body.className = "reflow_" + (new Date()).getTime();
-    });
-
     setInterval(tick, 50);
 
     function page(component: object) {
