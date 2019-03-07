@@ -27,6 +27,8 @@ body {
     flex-direction: column;
     overflow: hidden;
     transition-property: background, color, opacity;
+    background-color: #333;
+    color: white;
 }
 
 main {
@@ -58,6 +60,8 @@ header {
     height: 3rem;
     padding: 0;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    background-color: #03a9fa;
+    color: white;
 }
 
 header .icon {
@@ -88,6 +92,16 @@ main {
     opacity: 0.5;
 }
 
+@media (hover: none), (hover: on-demand) {
+    button:hover, .button:hover {
+        box-shadow: none !important;
+    }
+}
+
+button, .button {
+    background-color: #03a9fa;
+}
+
 button.round {
     width: 3rem;
     height: 3rem;
@@ -97,6 +111,11 @@ button.round {
 button, input, textarea, select {
     color: inherit;
     outline: none;
+}
+
+input, textarea, select {
+    background: black;
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .checkable {
@@ -133,29 +152,28 @@ button, input, textarea, select {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-}
-
-@media (min-width: 101vh) {
-    #timer {
-        flex-direction: row;
-    }
-}
-
-#timer .countdown-display, .countdown-buttons {
-    /* max-width: 56rem; */
-    /* margin: 0 auto; */
     padding: 1rem;
 }
 
 #timer .countdown-display {
     position: relative;
-    align-self: stretch;
-    flex-grow: 2;
+    align-self: center;
+    flex-grow: 1;
 }
 
 #timer .countdown-display > svg {
     display: block;
-    max-height: 75vmin;
+    max-height: 65vh;
+}
+
+@media (min-width: 90vh) {
+    #timer {
+        flex-direction: row;
+    }
+
+    #timer .countdown-display > svg {
+        max-height: 95vh;
+    }
 }
 
 #timer .countdown-circle {
@@ -169,16 +187,14 @@ button, input, textarea, select {
 #timer .countdown-display .reset-button {
     display: block;
     position: absolute;
-    visibility: hidden;
     right: 1rem;
     bottom: 1rem;
     transform: scale(1.5);
-    opacity: 0;
 }
 
-#timer .countdown-display .reset-button.active {
-    visibility: visible;
-    opacity: 1;
+#timer .countdown-display .reset-button:disabled {
+    visibility: hidden;
+    opacity: 0;
 }
 
 #timer .countdown-buttons {
@@ -200,22 +216,4 @@ button, input, textarea, select {
     display: block;
     padding: 1rem;
     border-bottom: 0.1rem solid rgba(0, 0, 0, 0.25);
-}
-
-body {
-    background-color: #333;
-    color: white;
-}
-
-header {
-    background-color: #03a9fa;
-    color: white;
-}
-
-button {
-    background-color: #03a9fa;
-}
-
-input, textarea, select {
-    background: black;
 }

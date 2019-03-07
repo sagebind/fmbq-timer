@@ -83,7 +83,7 @@ var CountdownDisplay = {
 var ResetButton = {
     view: function (vnode) {
         return m("button.round.reset-button.warning[title=Cancel]", {
-            class: vnode.attrs.disabled ? "" : "active",
+            disabled: vnode.attrs.disabled,
             onclick: app.cancelTimer,
         }, [
             m("svg.icon[viewBox='0 0 24 24']", [
