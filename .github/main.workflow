@@ -4,19 +4,19 @@ workflow "Main" {
 }
 
 action "Build image" {
-  uses = "actions/docker/cli@76ff57a"
-  args = "build -t repo.treescale.com/sagebind/fmbq-timer:0.3.0."
+  uses = "actions/docker/cli@master"
+  args = "build -t repo.treescale.com/sagebind/fmbq-timer:0.3.0 ."
 }
 
 action "Master" {
   needs = ["Build image"]
-  uses = "actions/bin/filter@b2bea07"
+  uses = "actions/bin/filter@master"
   args = "branch master"
 }
 
 action "Registry login" {
   needs = ["Master"]
-  uses = "actions/docker/login@76ff57a"
+  uses = "actions/docker/login@master"
   env = {
     DOCKER_REGISTRY_URL = "repo.treescale.com"
   }
@@ -25,7 +25,7 @@ action "Registry login" {
 
 action "Push image" {
   needs = ["Registry login"]
-  uses = "actions/docker/cli@76ff57a"
+  uses = "actions/docker/cli@master"
   args = "push repo.treescale.com/sagebind/fmbq-timer:0.3.0"
 }
 
