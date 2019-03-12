@@ -8,22 +8,6 @@ declare var m: any;
 declare var Promise: any;
 
 
-export function install() {
-    if (state.installed) {
-        alert("App is already installed!");
-    } else if (!state.installPrompt) {
-        alert("Install is not supported on your device.");
-    } else {
-        state.installPrompt.prompt();
-        state.installPrompt.userChoice.then(result => {
-            if (result.outcome === "accepted") {
-                state.installed = true;
-            }
-            state.installPrompt = null;
-        });
-    }
-}
-
 export function update() {
     if ("caches" in window) {
         caches.delete("static").then(() => {
@@ -63,19 +47,6 @@ function init() {
     // Set up offline cache handling.
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("service-worker.js");
-    }
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        state.installPrompt = e;
-    });
-
-    window.addEventListener("appinstalled", () => {
-        state.installed = true;
-    });
-
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-        state.installed = true;
     }
 
     setInterval(tick, 50);

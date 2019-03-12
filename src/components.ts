@@ -1,5 +1,6 @@
 import * as app from "./app";
 import * as audio from "./audio";
+import * as install from "./install";
 import settings from "./settings";
 import state from "./state";
 
@@ -124,6 +125,14 @@ var CountdownButtons = {
 
 export var SettingsPage = {
     view: function () {
+        let installMessage = "";
+
+        if (install.isInstalled()) {
+            installMessage = "App is installed. Yay!";
+        } else if (!install.supported()) {
+            installMessage = "Install not available for your device or browser, sorry.";
+        }
+
         return [
             m("header", [
                 m("a", {
@@ -183,12 +192,11 @@ export var SettingsPage = {
 
                 m("div", [
                     m("button", {
-                        disabled: !state.installPrompt || state.installed,
-                        onclick: app.install,
+                        disabled: install.isInstalled() || !install.supported(),
+                        onclick: install.install,
                     }, "Install offline"),
                     m("br"),
-                    m("span.small-text", { class: !!state.installPrompt || state.installed ? "hidden" : "" }, "Install not available for your device or browser, sorry."),
-                    m("span.small-text", { class: !state.installed ? "hidden" : "" }, "App is installed. Yay!"),
+                    m("span.small-text", installMessage),
                 ]),
 
                 m("div", [
