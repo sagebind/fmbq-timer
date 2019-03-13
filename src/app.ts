@@ -42,14 +42,19 @@ function pageDecorator<T>(component: T) {
     };
 }
 
+// Global error handler.
+window.addEventListener("error", (e: ErrorEvent) => {
+    console.error(e.error);
+});
+
 // Set up offline cache handling.
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }
 
+setInterval(tick, 50);
+
 m.route(document.body, "/", {
     "/": pageDecorator(MainPage),
     "/settings": pageDecorator(SettingsPage),
 });
-
-setInterval(tick, 50);
