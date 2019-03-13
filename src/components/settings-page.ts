@@ -35,8 +35,8 @@ export default {
                     m("label", "Timer sound"),
                     m("select", {
                         value: settings.timerSound,
-                        onchange: function (e) {
-                            settings.timerSound = e.target.value;
+                        onchange: function (e: Event) {
+                            settings.timerSound = (e.target as HTMLInputElement).value;
                             audio.play(settings.timerSound);
                             settings.save();
                         },
@@ -69,7 +69,9 @@ export default {
                 ]),
 
                 m("div", [
-                    m("button", { onclick: settings.reset }, "Reset settings"),
+                    m("button", {
+                        onclick: () => settings.reset()
+                    }, "Reset settings"),
                 ]),
 
                 m("div", [
@@ -82,7 +84,9 @@ export default {
                 ]),
 
                 m("div", [
-                    m("button", { onclick: () => app.update() }, "Self update"),
+                    m("button", {
+                        onclick: () => app.update()
+                    }, "Self update"),
                 ]),
 
                 m("div", [

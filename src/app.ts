@@ -27,9 +27,9 @@ function tick() {
     }
 }
 
-function pageDecorator(component: object) {
+function pageDecorator<T>(component: T) {
     return {
-        onmatch() {
+        onmatch(): Promise<T> {
             let previousPage = document.querySelector("body > main") as HTMLElement;
             if (previousPage) {
                 previousPage.style.opacity = "0";
@@ -47,9 +47,9 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }
 
-setInterval(tick, 50);
-
 m.route(document.body, "/", {
     "/": pageDecorator(MainPage),
     "/settings": pageDecorator(SettingsPage),
 });
+
+setInterval(tick, 50);
