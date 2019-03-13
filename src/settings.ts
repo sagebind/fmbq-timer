@@ -1,18 +1,18 @@
-export let settings = {
+const settings = {
     timerSound: "tizzy",
 
-    load: () => {
+    load() {
         var json = localStorage.getItem("settings");
         if (json) {
             Object.assign(settings, JSON.parse(json));
         }
     },
 
-    save: () => {
+    save() {
         localStorage.setItem("settings", JSON.stringify(settings));
     },
 
-    reset: () => {
+    reset() {
         localStorage.removeItem("settings");
         location.reload();
     },
