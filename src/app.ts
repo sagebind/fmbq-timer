@@ -47,7 +47,7 @@ window.addEventListener("error", (e: ErrorEvent) => {
     console.error(e.error);
 });
 
-// Set up offline cache handling.
+// Register service worker that will serve from the cache.
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }

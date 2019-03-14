@@ -40,32 +40,11 @@ export default {
                             audio.play(settings.timerSound);
                             settings.save();
                         },
-                    }, [
-                        m("option", {
-                            value: "bugaboo"
-                        }, "Bugaboo"),
-                        m("option", {
-                            value: "bumptious"
-                        }, "Bumptious"),
-                        m("option", {
-                            value: "correct"
-                        }, "Correct"),
-                        m("option", {
-                            value: "fanta"
-                        }, "Fanta"),
-                        m("option", {
-                            value: "foofaraw"
-                        }, "Foofaraw"),
-                        m("option", {
-                            value: "ludic"
-                        }, "Ludic"),
-                        m("option", {
-                            value: "tizzy"
-                        }, "Tizzy"),
-                        m("option", {
-                            value: "unctuous"
-                        }, "Unctuous"),
-                    ]),
+                    }, audio.sounds.map(sound => {
+                        return m("option", {
+                            value: sound.id
+                        }, sound.name);
+                    })),
                 ]),
 
                 m("div", [

@@ -1,19 +1,55 @@
-let sounds = new Map<string, HTMLAudioElement>();
+export class Sound {
+    name: string;
+    audio: HTMLAudioElement;
 
-export function play(sound: string) {
-    let audio: HTMLAudioElement;
-
-    if (sounds.has(sound)) {
-        audio = sounds.get(sound);
-    } else {
-        audio = new Audio("sounds/" + sound + ".wav");
-        sounds.set(sound, audio);
+    constructor(name: string) {
+        this.name = name;
     }
 
-    sounds.forEach(value => {
-        value.pause();
-    });
+    get id() {
+        return this.name.toLowerCase().replace(/\s/g, "-");
+    }
 
-    audio.currentTime = 0;
-    audio.play();
+    get uri() {
+        return `sounds/${this.id}.wav`;
+    }
+
+    play() {
+        if (!this.audio) {
+            this.audio = new Audio(this.uri);
+        }
+
+        this.audio.currentTime = 0;
+        this.audio.play();
+    }
+
+    pause() {
+        if (this.audio) {
+            this.audio.pause();
+        }
+    }
+}
+
+export const sounds = [
+    new Sound("Bleep"),
+    new Sound("Bumptious"),
+    new Sound("Chime"),
+    new Sound("Correct"),
+    new Sound("Energy"),
+    new Sound("Foofaraw"),
+    new Sound("MSN"),
+    new Sound("Sleigh Bells"),
+    new Sound("Tizzy"),
+];
+
+export function play(id: string) {
+    sounds.forEach(sound => sound.pause());
+
+    let sound = sounds.find(sound => sound.id == id);
+
+    if (sound) {
+        sound.play();
+    } else {
+        console.log("Unknown sound: " + id);
+    }
 }
