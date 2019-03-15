@@ -98,6 +98,31 @@
                 border-color: rgba(255, 255, 255, 0.25);
             }
 
+            input[type=checkbox] {
+                display: inline-block;
+                appearance: none;
+                -webkit-appearance: none;
+                width: 1em;
+                height: 1em;
+                border-color: currentColor;
+                border-radius: 0.2em;
+                border-style: solid;
+                border-width: 0.1em;
+                background: none;
+                transform: scale(1.5);
+            }
+            input[type=checkbox]:checked:after {
+                display: block;
+                position: absolute;
+                content: "";
+                width: 0.4em;
+                height: 0.7em;
+                border-color: currentColor;
+                border-style: solid;
+                border-width: 0 0.1em 0.1em 0;
+                transform: translate(0.4em, -0.1em) rotate(45deg);
+            }
+
             fieldset {
                 margin: 0;
                 padding: 0;
@@ -121,6 +146,10 @@
 
             fieldset > .selected:not(:disabled), fieldset > :active:not(:disabled) {
                 background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            fieldset input[type=checkbox] {
+                float: right;
             }
 
             .button {

@@ -9,7 +9,7 @@ declare var m: any;
 
 export function update() {
     if ("caches" in window) {
-        caches.delete("static").then(() => {
+        window.caches.delete("static").then(() => {
             location.reload();
         });
     } else {
@@ -21,6 +21,13 @@ function tick() {
     if (timer.active) {
         if (timer.remaining <= 0) {
             audio.play(settings.timerSound);
+
+            if (settings.vibrate && "vibrate" in navigator) {
+                if (navigator.vibrate(0)) {
+                    navigator.vibrate(100);
+                }
+            }
+
             timer.reset();
         }
 

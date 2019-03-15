@@ -29,6 +29,17 @@ export default {
                     m("small", audio.sounds.find(s => s.id == settings.timerSound).name),
                 ]),
 
+                m("label[for='setting-vibrate']", [
+                    m("input#setting-vibrate[type='checkbox']", {
+                        checked: settings.vibrate,
+                        onchange(e: Event) {
+                            settings.vibrate = (e.target as HTMLInputElement).checked;
+                            settings.save();
+                        }
+                    }),
+                    "Vibration",
+                ]),
+
                 m("button", {
                     onclick: () => settings.reset()
                 }, "Reset settings"),
