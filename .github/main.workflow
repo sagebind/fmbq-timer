@@ -5,7 +5,7 @@ workflow "Main" {
 
 action "Build image" {
   uses = "actions/docker/cli@master"
-  args = "build -t repo.treescale.com/sagebind/fmbq-timer:0.3.0 ."
+  args = "build -t repo.treescale.com/sagebind/fmbq-timer:0.4.0 ."
 }
 
 action "Master" {
@@ -26,7 +26,7 @@ action "Registry login" {
 action "Push image" {
   needs = ["Registry login"]
   uses = "actions/docker/cli@master"
-  args = "push repo.treescale.com/sagebind/fmbq-timer:0.3.0"
+  args = "push repo.treescale.com/sagebind/fmbq-timer:0.4.0"
 }
 
 action "Deploy to swarm" {

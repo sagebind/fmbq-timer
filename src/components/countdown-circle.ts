@@ -17,6 +17,11 @@ export default {
 
         return m("svg", {
             viewBox: "0 0 100 100",
+            style: {
+                display: "block",
+                width: "100%",
+                "max-height": "65vh",
+            },
             onclick: () => timer.start(20)
         }, [
             m("circle.countdown-circle", {
@@ -27,13 +32,19 @@ export default {
                 stroke: "currentColor",
                 transform: "rotate(-90, 50, 50)",
                 "stroke-dasharray": countdownCircleStyle(),
+                style: {
+                    "transition-property": "stroke-dasharray"
+                }
             }),
             m("text.countdown-text", {
                 x: 50,
                 y: 50,
-                style: "font-size: 32px",
                 fill: "currentColor",
                 "dominant-baseline": "central",
+                style: {
+                    "font-size": "32px",
+                    "text-anchor": "middle"
+                }
             }, timerText),
         ]);
     }

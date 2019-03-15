@@ -23,49 +23,30 @@ export default {
                 }, m(BackIcon)),
             ]),
 
-            m("main#settings", [
-                m("div", [
-                    m("label", "Timer sound"),
-                    m("select", {
-                        value: settings.timerSound,
-                        onchange: function (e: Event) {
-                            settings.timerSound = (e.target as HTMLInputElement).value;
-                            audio.play(settings.timerSound);
-                            settings.save();
-                        },
-                    }, audio.sounds.map(sound => {
-                        return m("option", {
-                            value: sound.id
-                        }, sound.name);
-                    })),
-                    m("a.button", {href: "#!/settings/sounds"}, "Sounds"),
+            m("main#settings", m("fieldset", [
+                m("a", {href: "#!/settings/sounds"}, [
+                    m("div", "Timer sound"),
+                    m("small", audio.sounds.find(s => s.id == settings.timerSound).name),
                 ]),
 
-                m("div", [
-                    m("button", {
-                        onclick: () => settings.reset()
-                    }, "Reset settings"),
+                m("button", {
+                    onclick: () => settings.reset()
+                }, "Reset settings"),
+
+                m("button", {
+                    disabled: install.isInstalled() || !install.supported(),
+                    onclick: () => install.install(),
+                }, [
+                    m("div", "Install offline"),
+                    m("small", installMessage),
                 ]),
 
-                m("div", [
-                    m("button", {
-                        disabled: install.isInstalled() || !install.supported(),
-                        onclick: () => install.install(),
-                    }, "Install offline"),
-                    m("br"),
-                    m("span.small-text", installMessage),
-                ]),
+                m("button", {
+                    onclick: () => app.update()
+                }, "Check for updates"),
 
-                m("div", [
-                    m("button", {
-                        onclick: () => app.update()
-                    }, "Self update"),
-                ]),
-
-                m("div", [
-                    m("span.small-text", "Version 0.3.0"),
-                ]),
-            ]),
+                m("div", m("small", "Version 0.4.0")),
+            ])),
         ];
     }
 };

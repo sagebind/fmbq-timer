@@ -1,8 +1,24 @@
 declare const m: any;
 
+const Icon = {
+    view(vnode) {
+        return m("svg.icon[viewBox='0 0 24 24']", {
+            style: {
+                display: "inline-block",
+                width: "1em",
+                height: "1em",
+                "stroke-width": 0,
+                "vertical-align": "text-top",
+                stroke: "currentColor",
+                fill: "currentColor",
+            }
+        }, vnode.children);
+    }
+}
+
 export const BackIcon = {
     view() {
-        return m("svg.icon[viewBox='0 0 24 24']", [
+        return m(Icon, [
             m("path", {
                 d: "M19 11h-11.6l5.3-5.3c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-7 7c-0.1 0.1-0.2 0.2-0.2 0.3-0.1 0.2-0.1 0.5 0 0.8 0.1 0.1 0.1 0.2 0.2 0.3l7 7c0.2 0.2 0.5 0.3 0.7 0.3s0.5-0.1 0.7-0.3c0.4-0.4 0.4-1 0-1.4l-5.3-5.3h11.6c0.6 0 1-0.4 1-1s-0.4-1-1-1z"
             }),
@@ -12,7 +28,7 @@ export const BackIcon = {
 
 export const ResetIcon = {
     view() {
-        return m("svg.icon[viewBox='0 0 24 24']", [
+        return m(Icon, [
             m("path", {
                 d: "M21.4 8.7c-0.9-2.5-2.7-4.5-5.1-5.7s-5.1-1.3-7.6-0.4c-1.4 0.5-2.7 1.3-3.7 2.3l-3 2.8v-3.7c0-0.6-0.4-1-1-1s-1 0.4-1 1v6c0 0 0 0.1 0 0.1 0 0.1 0 0.2 0 0.2 0 0.1 0.1 0.1 0.1 0.2 0 0 0 0.1 0.1 0.1 0 0 0 0 0 0 0.1 0.1 0.1 0.1 0.2 0.1 0 0 0.1 0.1 0.1 0.1s0.1 0 0.1 0 0.2 0 0.2 0c0 0 0 0 0 0h6c0.6 0 1-0.4 1-1s-0.2-0.8-0.8-0.8h-3.5l2.8-2.7c0.8-0.8 1.9-1.5 3-1.9 2-0.7 4.2-0.6 6.1 0.3s3.4 2.5 4.1 4.6c0.7 2 0.6 4.2-0.3 6.1s-2.5 3.4-4.6 4.1c-4.2 1.5-8.7-0.7-10.2-4.9-0.2-0.5-0.8-0.8-1.3-0.6s-0.8 0.8-0.6 1.3c1.5 4.1 5.4 6.7 9.5 6.7 1.1 0 2.2-0.2 3.3-0.6 5.2-1.8 8-7.5 6.1-12.7z"
             }),
@@ -22,7 +38,7 @@ export const ResetIcon = {
 
 export const SettingsIcon = {
     view() {
-        return m("svg.icon[viewBox='0 0 24 24']", [
+        return m(Icon, [
             m("path", {
                 d: "M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4c2.2 0 4-1.8 4-4s-1.8-4-4-4zM12 14c-1.1 0-2-0.9-2-2s0.9-2 2-2c1.1 0 2 0.9 2 2s-0.9 2-2 2z"
             }),

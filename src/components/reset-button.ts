@@ -5,7 +5,7 @@ declare const m: any;
 
 export default {
     view(vnode) {
-        return m("button.round.reset-button.warning[title=Cancel]", {
+        return m("button.button.round.reset-button.warning[title=Cancel]", {
             disabled: vnode.attrs.disabled,
             onclick: () => timer.reset(),
         }, m(ResetIcon));

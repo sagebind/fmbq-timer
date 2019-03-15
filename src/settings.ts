@@ -1,5 +1,5 @@
 const settings = {
-    timerSound: "tizzy",
+    timerSound: "correct",
 
     load() {
         var json = localStorage.getItem("settings");

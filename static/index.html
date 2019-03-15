@@ -9,12 +9,187 @@
         <meta name="apple-mobile-web-app-title" content="FMBQ Timer">
         <meta name="msapplication-starturl" content="/">
         <link rel="manifest" href="timer.webmanifest">
-        <link rel="stylesheet" href="https://unpkg.com/picnic@6.5.0/picnic.min.css">
-        <link rel="stylesheet" href="app.css">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-120.png">
         <link rel="apple-touch-icon" sizes="152x152" href="images/icon-152.png">
         <link rel="apple-touch-icon" sizes="167x167" href="images/icon-167.png">
         <link rel="apple-touch-icon" sizes="180x180" href="images/icon-180.png">
+
+        <style>
+            *, *:before, *:after {
+                box-sizing: border-box;
+            }
+
+            body, body * {
+                transition-duration: 0.2s !important;
+            }
+
+            html, body {
+                margin: 0;
+                min-height: 100%;
+
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: -moz-none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            body {
+                background-color: #333;
+                color: white;
+                font-family: sans-serif;
+            }
+
+            header {
+                display: flex;
+                position: static;
+                align-items: stretch;
+                vertical-align: middle;
+                justify-content: space-between;
+                flex-grow: 0;
+                flex-shrink: 0;
+                height: 3rem;
+                padding: 0;
+                box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+                background-color: #03a9fa;
+                color: white;
+            }
+
+            header .icon {
+                font-size: 1.5rem;
+            }
+
+            header a {
+                color: inherit;
+            }
+
+            header > * {
+                display: flex;
+                align-items: center;
+                padding: 0 1rem;
+                vertical-align: middle;
+                border-bottom: 0.2rem solid transparent;
+                transition-property: all;
+                outline: none;
+            }
+
+            small {
+                font-size: 0.8em;
+                opacity: 0.5;
+            }
+
+            :disabled {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            button, button:focus, input, textarea, select {
+                color: inherit;
+                outline: none !important;
+            }
+
+            button::-moz-focus-inner, input::-moz-focus-inner {
+                border: 0;
+                padding: 0;
+            }
+
+            input, textarea, select {
+                background: black;
+                border-color: rgba(255, 255, 255, 0.25);
+            }
+
+            fieldset {
+                margin: 0;
+                padding: 0;
+                border: none;
+            }
+
+            fieldset > * {
+                display: block;
+                color: inherit;
+                text-decoration: none;
+                font-size: 1em;
+                text-align: left;
+                outline: none;
+                padding: 1rem;
+                background: none;
+                width: 100%;
+                border-color: rgba(0, 0, 0, 0.25);
+                border-style: solid;
+                border-width: 0 0 0.1rem 0;
+            }
+
+            fieldset > .selected:not(:disabled), fieldset > :active:not(:disabled) {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .button {
+                padding: 0.5rem;
+                border: none;
+                background-color: #03a9fa;
+                border-radius: 0.25rem;
+                box-shadow: 0 0 0.5rem 1px rgba(0, 0, 0, 0.25);
+            }
+
+            .button.success {
+                background-color: #2ecc40;
+            }
+
+            .button.warning {
+                background-color: #f78747;
+            }
+
+            .button.round {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 3rem;
+            }
+
+            @media (hover: none), (hover: on-demand) {
+                .button:hover {
+                    box-shadow: none !important;
+                }
+            }
+
+            #timer .countdown-display {
+                position: relative;
+                align-self: center;
+                flex-grow: 1;
+            }
+
+            @media (min-width: 90vh) {
+                #timer {
+                    flex-direction: row;
+                }
+
+                #timer .countdown-display > svg {
+                    max-height: 95vh;
+                }
+            }
+
+            #timer .countdown-display .reset-button {
+                display: block;
+                position: absolute;
+                right: 1rem;
+                bottom: 1rem;
+                transform: scale(1.5);
+            }
+
+            #timer .countdown-display .reset-button:disabled {
+                visibility: hidden;
+                opacity: 0;
+            }
+
+            #timer .countdown-buttons > * {
+                flex-grow: 1;
+                margin: 0.5rem;
+            }
+
+            #timer .countdown-buttons > .big {
+                width: 100%;
+                padding: 1rem;
+            }
+        </style>
 
         <script src="https://unpkg.com/systemjs@0.21.6/dist/system.js"></script>
         <script src="https://unpkg.com/mithril@1.1.6/mithril.min.js"></script>

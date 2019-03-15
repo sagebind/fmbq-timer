@@ -1,8 +1,9 @@
 import * as audio from "./audio";
 import settings from "./settings";
 import timer from "./timer";
-import MainPage from "./components/main-page";
+import TimerPage from "./components/timer-page";
 import SettingsPage from "./components/settings-page";
+import SoundPicker from "./components/sound-picker";
 
 declare var m: any;
 
@@ -55,6 +56,7 @@ if ("serviceWorker" in navigator) {
 setInterval(tick, 50);
 
 m.route(document.body, "/", {
-    "/": pageDecorator(MainPage),
+    "/": pageDecorator(TimerPage),
     "/settings": pageDecorator(SettingsPage),
+    "/settings/sounds": pageDecorator(SoundPicker),
 });
