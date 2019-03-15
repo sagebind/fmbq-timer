@@ -2,6 +2,7 @@ import * as app from "../app";
 import * as audio from "../audio";
 import * as install from "../install";
 import settings from "../settings";
+import {BackIcon} from "./icons";
 
 declare const m: any;
 
@@ -19,15 +20,7 @@ export default {
             m("header", [
                 m("a", {
                     href: "#!/",
-                }, [
-                    m("svg.icon", {
-                        viewBox: "0 0 24 24"
-                    }, [
-                        m("path", {
-                            d: "M19 11h-11.6l5.3-5.3c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-7 7c-0.1 0.1-0.2 0.2-0.2 0.3-0.1 0.2-0.1 0.5 0 0.8 0.1 0.1 0.1 0.2 0.2 0.3l7 7c0.2 0.2 0.5 0.3 0.7 0.3s0.5-0.1 0.7-0.3c0.4-0.4 0.4-1 0-1.4l-5.3-5.3h11.6c0.6 0 1-0.4 1-1s-0.4-1-1-1z"
-                        }),
-                    ]),
-                ]),
+                }, m(BackIcon)),
             ]),
 
             m("main#settings", [
@@ -45,6 +38,7 @@ export default {
                             value: sound.id
                         }, sound.name);
                     })),
+                    m("a.button", {href: "#!/settings/sounds"}, "Sounds"),
                 ]),
 
                 m("div", [
