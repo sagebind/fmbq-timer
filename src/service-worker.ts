@@ -4,6 +4,7 @@ self.addEventListener("fetch", (event: any) => {
         let response = await cache.match(event.request);
 
         if (!response) {
+            console.log("Fetching resource from network: " + event.request.url);
             response = await fetch(event.request);
             cache.put(event.request, response.clone());
         }
