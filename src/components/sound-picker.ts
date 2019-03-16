@@ -1,3 +1,4 @@
+import * as alarm from "../alarm";
 import * as audio from "../audio";
 import settings from "../settings";
 import {BackIcon} from "./icons";
@@ -12,8 +13,8 @@ const Item = {
                 className: settings.timerSound === vnode.attrs.sound.id ? "selected" : "",
 
                 onclick() {
-                    audio.play(vnode.attrs.sound.id);
                     settings.timerSound = vnode.attrs.sound.id;
+                    alarm.triggerSound();
                     settings.save();
                 }
             },
@@ -29,6 +30,7 @@ export default {
                 m("a", {
                     href: "#!/settings",
                 }, m(BackIcon)),
+                m("h1", "Timer sound"),
             ]),
 
             m("main", [

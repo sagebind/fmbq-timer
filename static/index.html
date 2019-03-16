@@ -44,16 +44,14 @@
             header {
                 display: flex;
                 position: static;
-                align-items: stretch;
-                vertical-align: middle;
-                justify-content: space-between;
-                flex-grow: 0;
-                flex-shrink: 0;
                 height: 3rem;
                 padding: 0;
+                align-items: stretch;
+                vertical-align: middle;
+                flex-grow: 0;
+                flex-shrink: 0;
                 box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
                 background-color: #03a9fa;
-                color: white;
             }
 
             header .icon {
@@ -64,13 +62,19 @@
                 color: inherit;
             }
 
+            header h1 {
+                flex-grow: 1;
+                font-size: 1rem;
+            }
+
             header > * {
                 display: flex;
                 align-items: center;
                 padding: 0 1rem;
                 vertical-align: middle;
-                border-bottom: 0.2rem solid transparent;
-                transition-property: all;
+            }
+
+            a {
                 outline: none;
             }
 
@@ -172,18 +176,6 @@
                 width: 3rem;
                 height: 3rem;
                 border-radius: 3rem;
-            }
-
-            @media (hover: none), (hover: on-demand) {
-                .button:hover {
-                    box-shadow: none !important;
-                }
-            }
-
-            #timer .countdown-display {
-                position: relative;
-                align-self: center;
-                flex-grow: 1;
             }
 
             @media (min-width: 90vh) {

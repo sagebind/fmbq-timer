@@ -10,7 +10,7 @@ export default {
     view() {
         return [
             m("header", [
-                m(".brand", "FMBQ Timer"),
+                m("h1", "FMBQ Timer"),
                 m("a.right[title=Settings]", {
                     href: "#!/settings",
                 }, m(SettingsIcon)),
@@ -24,7 +24,13 @@ export default {
                     padding: "1rem",
                 }
             }, [
-                m(".countdown-display", [
+                m(".countdown-display", {
+                    style: {
+                        position: "relative",
+                        "align-self": "center",
+                        "flex-grow": 1
+                    }
+                }, [
                     m(CountdownCircle),
                     m(ResetButton, {
                         disabled: !timer.active

@@ -1,6 +1,7 @@
 const settings = {
     timerSound: "correct",
-    vibrate: true,
+    vibrateEnabled: true,
+    soundEnabled: true,
 
     load() {
         var json = localStorage.getItem("settings");

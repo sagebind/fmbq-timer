@@ -1,5 +1,4 @@
-import * as audio from "./audio";
-import settings from "./settings";
+import * as alarm from "./alarm";
 import timer from "./timer";
 import TimerPage from "./components/timer-page";
 import SettingsPage from "./components/settings-page";
@@ -20,14 +19,7 @@ export function update() {
 function tick() {
     if (timer.active) {
         if (timer.remaining <= 0) {
-            audio.play(settings.timerSound);
-
-            if (settings.vibrate && "vibrate" in navigator) {
-                if (navigator.vibrate(0)) {
-                    navigator.vibrate(100);
-                }
-            }
-
+            alarm.trigger();
             timer.reset();
         }
 
