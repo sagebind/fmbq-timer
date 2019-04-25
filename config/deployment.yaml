@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: fmbq-timer
+  labels:
+    k8s-app: fmbq-timer
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fmbq-timer
+  template:
+    metadata:
+      labels:
+        k8s-app: fmbq-timer
+    spec:
+      containers:
+        - name: fmbq-timer
+          image: repo.treescale.com/sagebind/fmbq-timer:latest
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: 256M
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: fmbq-timer
+  labels:
+    k8s-app: fmbq-timer
+spec:
+  selector:
+    k8s-app: fmbq-timer
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: fmbq-timer
+  labels:
+    k8s-app: fmbq-timer
+spec:
+  rules:
+    - host: fmbq-timer.stephencoakley.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: fmbq-timer
+              servicePort: http

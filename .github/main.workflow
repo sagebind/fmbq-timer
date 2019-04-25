@@ -1,21 +1,14 @@
-workflow "Main" {
+workflow "main" {
   on = "push"
-  resolves = ["Deploy to swarm"]
+  resolves = ["deploy"]
 }
 
-action "Build image" {
+action "build" {
   uses = "actions/docker/cli@master"
-  args = "build -t repo.treescale.com/sagebind/fmbq-timer:0.4.0 ."
+  args = ["build", "-t", "repo.treescale.com/sagebind/fmbq-timer:$GITHUB_SHA", "."]
 }
 
-action "Master" {
-  needs = ["Build image"]
-  uses = "actions/bin/filter@master"
-  args = "branch master"
-}
-
-action "Registry login" {
-  needs = ["Master"]
+action "registry-login" {
   uses = "actions/docker/login@master"
   env = {
     DOCKER_REGISTRY_URL = "repo.treescale.com"
@@ -23,15 +16,31 @@ action "Registry login" {
   secrets = ["DOCKER_USERNAME", "DOCKER_PASSWORD"]
 }
 
-action "Push image" {
-  needs = ["Registry login"]
+action "push" {
+  needs = ["build", "registry-login"]
   uses = "actions/docker/cli@master"
-  args = "push repo.treescale.com/sagebind/fmbq-timer:0.4.0"
+  args = ["push", "repo.treescale.com/sagebind/fmbq-timer"]
 }
 
-action "Deploy to swarm" {
-  uses = "sagebind/docker-swarm-deploy-action@master"
-  needs = ["Push image"]
-  secrets = ["DOCKER_REMOTE_HOST", "DOCKER_SSH_PRIVATE_KEY", "DOCKER_SSH_PUBLIC_KEY"]
-  args = "stack deploy --with-registry-auth --prune --compose-file deploy/prod.yaml fmbq-timer"
+action "master" {
+  uses = "actions/bin/filter@master"
+  args = "branch master"
+}
+
+action "deployment-config" {
+  uses = "actions/bin/sh@master"
+  args = ["sed -i s/:latest/:$GITHUB_SHA/ $GITHUB_WORKSPACE/config/deployment.yaml"]
+}
+
+action "kubeconfig" {
+  uses = "digitalocean/action-doctl@master"
+  secrets = ["DIGITALOCEAN_ACCESS_TOKEN"]
+  args = ["kubernetes cluster kubeconfig show nyc1 > $HOME/.kubeconfig"]
+}
+
+action "deploy" {
+  needs = ["master", "push", "deployment-config", "kubeconfig"]
+  uses = "docker://lachlanevenson/k8s-kubectl"
+  runs = "sh -l -c"
+  args = ["kubectl --kubeconfig=$HOME/.kubeconfig apply -f $GITHUB_WORKSPACE/config/deployment.yaml"]
 }
