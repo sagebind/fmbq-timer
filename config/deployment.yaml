@@ -49,6 +49,13 @@ metadata:
     k8s-app: fmbq-timer
 spec:
   rules:
+    - host: fmbqtimer.app
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: fmbq-timer
+              servicePort: http
     - host: fmbq-timer.stephencoakley.com
       http:
         paths:
