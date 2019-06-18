@@ -10,10 +10,8 @@ action "build" {
 
 action "registry-login" {
   uses = "actions/docker/login@master"
-  env = {
-    DOCKER_REGISTRY_URL = "repo.treescale.com"
-  }
-  secrets = ["DOCKER_USERNAME", "DOCKER_PASSWORD"]
+  runs = ["sh", "-c", "docker login docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN"]
+  secrets = ["GITHUB_TOKEN"]
 }
 
 action "push" {
