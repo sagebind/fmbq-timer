@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   fmbq-timer:
-    image: repo.treescale.com/sagebind/fmbq-timer:0.4.0
+    image: docker.pkg.github.com/sagebind/fmbq-timer/fmbq-timer:${TAG:-latest}
     build: .
     ports:
       - 8000:80
