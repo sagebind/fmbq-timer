@@ -1,8 +1,9 @@
+apiVersion: apps/v1
 kind: Deployment
-apiVersion: extensions/v1beta1
 metadata:
   name: fmbq-timer
   labels:
+    app.kubernetes.io/name: fmbq-timer
     k8s-app: fmbq-timer
 spec:
   selector:
@@ -11,6 +12,7 @@ spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/name: fmbq-timer
         k8s-app: fmbq-timer
     spec:
       containers:
@@ -25,11 +27,12 @@ spec:
 
 ---
 
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: fmbq-timer
   labels:
+    app.kubernetes.io/name: fmbq-timer
     k8s-app: fmbq-timer
 spec:
   selector:
@@ -41,12 +44,15 @@ spec:
 
 ---
 
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
-apiVersion: extensions/v1beta1
 metadata:
   name: fmbq-timer
   labels:
+    app.kubernetes.io/name: fmbq-timer
     k8s-app: fmbq-timer
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
     - host: fmbqtimer.app
@@ -56,10 +62,7 @@ spec:
             backend:
               serviceName: fmbq-timer
               servicePort: http
-    - host: fmbq-timer.stephencoakley.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: fmbq-timer
-              servicePort: http
+  tls:
+    - hosts:
+        - fmbqtimer.app
+      secretName: fmbq-timer-tls
