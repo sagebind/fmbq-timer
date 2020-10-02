@@ -13,6 +13,10 @@ Need to keep track of timings for Free Methodist Bible Quizzing? This app has yo
 - Several built-in timer sounds that are non-distracting and clear.
 - Built-in times for answering and prejumps (20 seconds), time-outs (60 seconds), and appeals (30 seconds).
 
+## Installation
+
+<a href="https://play.google.com/store/apps/details?id=org.fmbq.timer"><img alt="Get it on Google Play" src="https://cdn.rawgit.com/steverichey/google-play-badge-svg/master/img/en_get.svg" height="64"></a>
+
 ## License
 
 This project's source code and documentation is licensed under the MIT license. See the [LICENSE](LICENSE) file for details.
