@@ -15,11 +15,9 @@ jobs:
       - name: Push Docker image
         if: github.ref == 'refs/heads/master'
         run: |
-          docker login docker.pkg.github.com -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker-compose push
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           TAG: ${{ github.sha }}
 
       - name: Update deployment config

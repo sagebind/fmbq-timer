@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   fmbq-timer:
-    image: docker.pkg.github.com/sagebind/fmbq-timer/fmbq-timer:${TAG:-latest}
+    image: ghcr.io/sagebind/fmbq-timer/fmbq-timer:${TAG:-latest}
     build: .
     ports:
       - 8000:80

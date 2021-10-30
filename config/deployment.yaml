@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: fmbq-timer
-          image: docker.pkg.github.com/sagebind/fmbq-timer/fmbq-timer:latest
+          image: ghcr.io/sagebind/fmbq-timer/fmbq-timer:latest
           ports:
             - name: http
               containerPort: 80
