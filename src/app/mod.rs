@@ -51,7 +51,7 @@ impl App {
 
         let mut style = ctx.egui_ctx.style().as_ref().clone();
         let rounding = Rounding::same(6.0);
-        style.spacing.button_padding = vec2(8.0, 4.0);
+        style.spacing.button_padding = vec2(8.0, 8.0);
         style.visuals.widgets.inactive.rounding = rounding;
         style.visuals.widgets.active.rounding = rounding;
         style.visuals.widgets.hovered.rounding = rounding;
@@ -185,7 +185,7 @@ impl eframe::App for App {
 }
 
 fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateResult) {
-    ui.add(title("Timer"));
+    ui.add(title("FMBQ Timer"));
 
     ui.add_space(48.0);
 
