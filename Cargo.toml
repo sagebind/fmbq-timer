@@ -14,6 +14,7 @@ path = "src/main.rs"
 [dependencies]
 hound = "3.5"
 log = "0.4"
+shadow-rs = "0.23"
 
 [dependencies.eframe]
 version = "0.22"
@@ -33,3 +34,6 @@ features = ["android-native-activity"]
 
 [target.'cfg(not(target_os = "android"))'.dependencies]
 env_logger = "0.10"
+
+[build-dependencies]
+shadow-rs = "0.23"

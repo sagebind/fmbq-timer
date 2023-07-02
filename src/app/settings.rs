@@ -43,7 +43,16 @@ pub fn settings_page(ui: &mut Ui) {
     ui.add(Item {
         label: "Version".into(),
         description: None,
-        value: |ui: &mut Ui| ui.label(env!("CARGO_PKG_VERSION")),
+        value: |ui: &mut Ui| {
+            ui.with_layout(Layout::top_down(Align::Max), |ui| {
+                ui.label(env!("CARGO_PKG_VERSION"));
+                ui.weak(format!(
+                    "build date {}",
+                    crate::build::BUILD_TIME
+                ));
+            })
+            .response
+        },
     });
 
     ui.label("Licenses");

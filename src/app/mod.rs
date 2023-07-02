@@ -7,9 +7,9 @@ use eframe::{
     CreationContext,
 };
 
-use self::colors::BLUE;
 use self::colors::ORANGE;
 use self::widgets::title;
+use self::{colors::BLUE, widgets::countdown_circle};
 
 mod audio;
 mod colors;
@@ -17,7 +17,7 @@ mod settings;
 mod timer;
 mod widgets;
 
-const ANSWER_TIME: Duration = Duration::from_secs(5);
+const ANSWER_TIME: Duration = Duration::from_secs(20);
 const PREJUMP_TIME: Duration = ANSWER_TIME;
 const APPEAL_TIME: Duration = Duration::from_secs(30);
 const TIME_OUT_TIME: Duration = Duration::from_secs(60);
@@ -43,13 +43,18 @@ impl App {
         {
             let app = crate::platform::android::APP.get().unwrap();
             let content_rect = app.content_rect();
-            content_margin.top = content_rect.top as f32 / ctx.egui_ctx.pixels_per_point();
+            // TODO: Why is the top of the content rect so large?
+            content_margin.top = 0.0;//(content_rect.top as f32 / ctx.egui_ctx.pixels_per_point()).clamp(0.0, 2.0);
             content_margin.bottom = ctx.integration_info.window_info.size.y
                 - (content_rect.bottom as f32 / ctx.egui_ctx.pixels_per_point());
         }
 
         let mut style = ctx.egui_ctx.style().as_ref().clone();
+        let rounding = Rounding::same(6.0);
         style.spacing.button_padding = vec2(8.0, 4.0);
+        style.visuals.widgets.inactive.rounding = rounding;
+        style.visuals.widgets.active.rounding = rounding;
+        style.visuals.widgets.hovered.rounding = rounding;
         style.visuals.widgets.active.bg_fill = BLUE;
         style.visuals.selection.bg_fill = BLUE;
         style.visuals.button_frame = false;
@@ -76,7 +81,8 @@ impl eframe::App for App {
         {
             let app = crate::platform::android::APP.get().unwrap();
             let content_rect = app.content_rect();
-            self.content_margin.top = content_rect.top as f32 / ctx.pixels_per_point();
+            // TODO: Why is the top of the content rect so large?
+            self.content_margin.top = (content_rect.top as f32 / ctx.pixels_per_point()).clamp(0.0, 32.0);
             self.content_margin.bottom = frame.info().window_info.size.y
                 - (content_rect.bottom as f32 / ctx.pixels_per_point());
         }
@@ -95,6 +101,44 @@ impl eframe::App for App {
                 main_page(ui, &mut self.timer, timer_result);
             }
         });
+
+        if !self.settings_open {
+            egui::Area::new("countdown_circle_overlay")
+                .anchor(Align2::CENTER_TOP, vec2(0.0, 56.0 + self.content_margin.top))
+                .interactable(false)
+                .show(ctx, |ui| {
+                    let percent = if let timer::UpdateResult::Running(remaining) = timer_result {
+                        remaining.as_secs_f32() / ANSWER_TIME.as_secs_f32()
+                    } else {
+                        1.0
+                    };
+                    ui.add(countdown_circle(160.0, 5.0, percent));
+                });
+
+            egui::Area::new("reset_button_overlay")
+                .anchor(Align2::CENTER_TOP, vec2(56.0, 176.0 + self.content_margin.top))
+                .show(ctx, |ui| {
+                    ui.add_visible_ui(
+                        matches!(timer_result, timer::UpdateResult::Running(_)),
+                        |ui| {
+                            ui.with_layout(Layout::top_down(Align::Center), |ui| {
+                                if ui
+                                    .add(
+                                        Button::new(RichText::new("⟲").size(16.0))
+                                            .frame(false)
+                                            .min_size(vec2(40.0, 40.0))
+                                            .rounding(Rounding::same(40.0))
+                                            .fill(ORANGE),
+                                    )
+                                    .clicked()
+                                {
+                                    self.timer.reset();
+                                }
+                            });
+                        },
+                    );
+                });
+        }
 
         egui::TopBottomPanel::bottom("toolbar")
             .frame(Frame::none().fill(Color32::from_white_alpha(2)))
@@ -128,32 +172,6 @@ impl eframe::App for App {
                 ui.add_space(self.content_margin.bottom);
             });
 
-        if !self.settings_open {
-            egui::Area::new("reset_button_overlay")
-                .anchor(Align2::CENTER_TOP, vec2(56.0, 160.0))
-                .show(ctx, |ui| {
-                    ui.add_visible_ui(
-                        matches!(timer_result, timer::UpdateResult::Running(_)),
-                        |ui| {
-                            ui.with_layout(Layout::top_down(Align::Center), |ui| {
-                                if ui
-                                    .add(
-                                        Button::new(RichText::new("⟲").size(16.0))
-                                            .frame(false)
-                                            .min_size(vec2(40.0, 40.0))
-                                            .rounding(Rounding::same(40.0))
-                                            .fill(ORANGE),
-                                    )
-                                    .clicked()
-                                {
-                                    self.timer.reset();
-                                }
-                            });
-                        },
-                    );
-                });
-        }
-
         if timer_result == timer::UpdateResult::Expired {
             self.audio_player.play_timer_sound();
         }
@@ -169,7 +187,7 @@ impl eframe::App for App {
 fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateResult) {
     ui.add(title("Timer"));
 
-    ui.add_space(32.0);
+    ui.add_space(48.0);
 
     ui.vertical_centered(|ui| {
         let value = if let timer::UpdateResult::Running(remaining) = timer_result {
@@ -188,7 +206,7 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateR
         }
     });
 
-    ui.add_space(48.0);
+    ui.add_space(64.0);
 
     ui.vertical_centered_justified(|ui| {
         if ui
