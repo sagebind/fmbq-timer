@@ -1,19 +1,20 @@
 use eframe::{
     egui::{Checkbox, Layout, Response, RichText, Ui, Widget},
-    emath::Align,
+    emath::Align, Storage,
 };
 
 use super::widgets::{heading, title};
 
-pub fn settings_page(ui: &mut Ui) {
+pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage) {
     ui.add(title("Settings"));
 
+    let mut enable_sounds = eframe::get_value::<bool>(storage, "enable-sounds").unwrap_or_default();
     let mut my_bool = true;
 
     ui.add(Item {
         label: "Enable sounds".into(),
         description: None,
-        value: Checkbox::without_text(&mut my_bool),
+        value: Checkbox::without_text(&mut enable_sounds),
     });
 
     ui.add(Item {
@@ -58,6 +59,8 @@ pub fn settings_page(ui: &mut Ui) {
     ui.label("Licenses");
 
     ui.separator();
+
+    eframe::set_value(storage, "enable-sounds", &enable_sounds);
 }
 
 struct Item<W> {

@@ -1,15 +1,10 @@
 [package]
-name = "fmbq-timer-rs"
+name = "fmbqtimer"
 version = "2.0.0-alpha.1"
 edition = "2021"
 
 [lib]
-name = "fmbqtimer"
 crate-type = ["cdylib"]
-
-[[bin]]
-name = "fmbqtimer"
-path = "src/main.rs"
 
 [dependencies]
 hound = "3.5"
@@ -18,10 +13,11 @@ shadow-rs = "0.23"
 
 [dependencies.eframe]
 version = "0.22"
-features = ["android-native-activity"]
+default-features = false
+features = ["glow", "default_fonts", "persistence", "android-native-activity"]
 
 [target.'cfg(target_os = "android")'.dependencies]
-android_logger = "0.11"
+android_logger = "0.13"
 
 [target.'cfg(target_os = "android")'.dependencies.ndk]
 version = "0.7"
@@ -37,3 +33,22 @@ env_logger = "0.10"
 
 [build-dependencies]
 shadow-rs = "0.23"
+
+# Pull in fix for crash on Android activity suspend/resume for the glow backend.
+# See:
+#
+# - https://github.com/rust-mobile/rust-android-examples/issues/6
+# - https://github.com/emilk/egui/issues/3079
+# - https://github.com/emilk/egui/pull/3080
+#
+# This should be fixed in egui 0.23.
+[patch.crates-io.eframe]
+git = "https://github.com/emilk/egui.git"
+rev = "9478e50d012c5138551c38cbee16b07bc1fcf283"
+
+# Pull in backported fix for volume keys being captured and ignored by default,
+# instead of being handled the default way by Android. See
+# https://github.com/rust-windowing/winit/pull/2748.
+[patch.crates-io.winit]
+git = "https://github.com/sagebind/winit.git"
+rev = "00628439ebfb102b2989c8b423ab635352ad3a44"

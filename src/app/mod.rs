@@ -37,6 +37,10 @@ impl App {
         log::info!("screen PPI: {}", ctx.egui_ctx.pixels_per_point());
         // ctx.egui_ctx.set_pixels_per_point(4.0);
 
+        if ctx.storage.is_none() {
+            log::debug!("storage is required");
+        }
+
         let mut content_margin = Margin::default();
 
         #[cfg(target_os = "android")]
@@ -94,7 +98,7 @@ impl eframe::App for App {
             ui.add_space(self.content_margin.top);
 
             if self.settings_open {
-                settings::settings_page(ui);
+                settings::settings_page(ui, frame.storage_mut().unwrap());
                 ui.label(format!("screen PPI: {}", ctx.pixels_per_point()));
                 ui.label(format!("content margin: {:?}", self.content_margin));
             } else {

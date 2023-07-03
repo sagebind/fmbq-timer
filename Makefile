@@ -40,12 +40,8 @@ clean:
 
 .PHONY: run
 run: target/apk/$(APK_PACKAGE:%=%-signed.apk)
-	# $(ADB) kill-server
-	$(ANDROID_HOME)/emulator/emulator -avd $(EMULATOR_AVD) -netdelay none -netspeed full &
-	# $(ADB) start-server
-	$(ADB) devices
+	# $(ANDROID_HOME)/emulator/emulator -avd $(EMULATOR_AVD) -netdelay none -netspeed full -no-snapshot -restart-when-stalled &
 	$(ADB) wait-for-device
-	$(ADB) devices
 	$(ADB) install -t $<
 	$(ADB) shell monkey -p $(APK_PACKAGE) 1
 
