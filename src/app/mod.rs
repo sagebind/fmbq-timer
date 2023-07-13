@@ -7,11 +7,10 @@ use eframe::{
     CreationContext,
 };
 
-use self::colors::ORANGE;
+use self::{colors::ORANGE};
 use self::widgets::title;
 use self::{colors::BLUE, widgets::countdown_circle};
 
-mod audio;
 mod colors;
 mod settings;
 mod timer;
@@ -24,7 +23,6 @@ const TIME_OUT_TIME: Duration = Duration::from_secs(60);
 
 pub struct App {
     timer: timer::Timer,
-    audio_player: audio::Player,
     settings_open: bool,
     content_margin: Margin,
 }
@@ -67,7 +65,6 @@ impl App {
 
         Self {
             timer: Default::default(),
-            audio_player: audio::Player::new(),
             settings_open: false,
             content_margin,
         }
@@ -91,7 +88,7 @@ impl eframe::App for App {
                 - (content_rect.bottom as f32 / ctx.pixels_per_point());
         }
 
-        let timer_result = self.timer.update();
+        let timer_result = self.timer.state();
 
         egui::CentralPanel::default().show(ctx, |ui| {
             // Account for mobile display margins
@@ -111,8 +108,8 @@ impl eframe::App for App {
                 .anchor(Align2::CENTER_TOP, vec2(0.0, 56.0 + self.content_margin.top))
                 .interactable(false)
                 .show(ctx, |ui| {
-                    let percent = if let timer::UpdateResult::Running(remaining) = timer_result {
-                        remaining.as_secs_f32() / ANSWER_TIME.as_secs_f32()
+                    let percent = if let timer::State::Running(remaining, total) = timer_result {
+                        remaining.as_secs_f32() / total.as_secs_f32()
                     } else {
                         1.0
                     };
@@ -123,7 +120,7 @@ impl eframe::App for App {
                 .anchor(Align2::CENTER_TOP, vec2(56.0, 176.0 + self.content_margin.top))
                 .show(ctx, |ui| {
                     ui.add_visible_ui(
-                        matches!(timer_result, timer::UpdateResult::Running(_)),
+                        matches!(timer_result, timer::State::Running(_, _)),
                         |ui| {
                             ui.with_layout(Layout::top_down(Align::Center), |ui| {
                                 if ui
@@ -176,25 +173,21 @@ impl eframe::App for App {
                 ui.add_space(self.content_margin.bottom);
             });
 
-        if timer_result == timer::UpdateResult::Expired {
-            self.audio_player.play_timer_sound();
-        }
-
         // If we just started the timer this frame then we also need to start
         // repainting.
-        if matches!(self.timer.update(), timer::UpdateResult::Running(_)) {
+        if matches!(self.timer.state(), timer::State::Running(_, _)) {
             ctx.request_repaint_after(Duration::from_millis(10));
         }
     }
 }
 
-fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateResult) {
+fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) {
     ui.add(title("FMBQ Timer"));
 
     ui.add_space(48.0);
 
     ui.vertical_centered(|ui| {
-        let value = if let timer::UpdateResult::Running(remaining) = timer_result {
+        let value = if let timer::State::Running(remaining, _) = timer_result {
             remaining.as_secs_f32()
         } else {
             0.0
@@ -207,6 +200,7 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateR
             .clicked()
         {
             timer.start(ANSWER_TIME);
+            ui.ctx().request_repaint();
         }
     });
 
@@ -222,12 +216,14 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateR
             .clicked()
         {
             timer.start(ANSWER_TIME);
+            ui.ctx().request_repaint();
         }
 
         ui.add_space(8.0);
 
         if ui.add(Button::new("Prejump").fill(BLUE)).clicked() {
             timer.start(PREJUMP_TIME);
+            ui.ctx().request_repaint();
         }
 
         ui.add_space(8.0);
@@ -236,14 +232,24 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::UpdateR
             columns[0].with_layout(Layout::top_down_justified(Align::Center), |ui| {
                 if ui.add(Button::new("Appeal").fill(BLUE)).clicked() {
                     timer.start(APPEAL_TIME);
+                    ui.ctx().request_repaint();
                 }
             });
 
             columns[1].with_layout(Layout::top_down_justified(Align::Center), |ui| {
                 if ui.add(Button::new("Time Out").fill(BLUE)).clicked() {
                     timer.start(TIME_OUT_TIME);
+                    ui.ctx().request_repaint();
                 }
             });
         });
+
+        ui.add_space(8.0);
+
+        if ui.add(Button::new("Test timer sound").fill(BLUE)).clicked() {
+            timer.test_audio();
+            ui.ctx().request_repaint();
+        }
+
     });
 }

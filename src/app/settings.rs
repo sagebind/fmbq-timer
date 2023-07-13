@@ -49,7 +49,7 @@ pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage) {
                 ui.label(env!("CARGO_PKG_VERSION"));
                 ui.weak(format!(
                     "build date {}",
-                    crate::build::BUILD_TIME
+                    crate::BUILD_TIME_STR
                 ));
             })
             .response

@@ -1,3 +1,5 @@
+//! Provides an entrypoint for Android compatible with `NativeActivity`.
+
 use std::{env, sync::OnceLock};
 use winit::platform::android::{
     activity::{AndroidApp, WindowManagerFlags},
@@ -5,6 +7,8 @@ use winit::platform::android::{
 };
 
 pub static APP: OnceLock<AndroidApp> = OnceLock::new();
+
+pub mod audio_player;
 
 #[no_mangle]
 pub fn android_main(app: AndroidApp) {
@@ -44,5 +48,5 @@ pub fn android_main(app: AndroidApp) {
     // https://github.com/rust-windowing/winit/issues/2706
     native_options.run_and_return = false;
 
-    crate::run::run_native(native_options).unwrap();
+    crate::run_native(native_options).unwrap();
 }
