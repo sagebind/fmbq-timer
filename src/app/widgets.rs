@@ -65,7 +65,7 @@ pub fn countdown_circle(size: f32, stroke: f32, percent: f32) -> impl Widget {
             let y = rect.center().y + radius * radians.sin();
 
             ui.painter()
-                .circle_filled(pos2(x, y), stroke / 2.0, Color32::WHITE);
+                .circle_filled(pos2(x, y), stroke / 2.0, ui.visuals().strong_text_color());
         }
 
         response

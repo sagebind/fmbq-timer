@@ -58,8 +58,7 @@ dependencies = [
 [[package]]
 name = "android-activity"
 version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40bc1575e653f158cbdc6ebcd917b9564e66321c5325c232c3591269c257be69"
+source = "git+https://github.com/sagebind/android-activity.git?branch=fix-deadlock-on-ondestroy#37625ec220f7e4f61ef8acd782722fbd7e364d9e"
 dependencies = [
  "android-properties",
  "bitflags",
@@ -80,6 +79,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc7eb209b1518d6bb87b283c20095f5228ecda460da70b44f0802523dea6da04"
 
 [[package]]
+name = "android-wakelock"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "296e5b7c23adb32743194b1810604b772f2be10f0b0387365cb3ba09cd5c1851"
+dependencies = [
+ "jni",
+ "log",
+ "ndk-context",
+]
+
+[[package]]
 name = "android_log-sys"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -95,6 +105,30 @@ dependencies = [
  "env_logger",
  "log",
  "once_cell",
+]
+
+[[package]]
+name = "app_dirs2"
+version = "2.5.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7e7b35733e3a8c1ccb90385088dd5b6eaa61325cb4d1ad56e683b5224ff352e"
+dependencies = [
+ "jni",
+ "ndk-context",
+ "winapi",
+ "xdg",
+]
+
+[[package]]
+name = "appstorage"
+version = "0.1.0"
+dependencies = [
+ "app_dirs2",
+ "log",
+ "serde",
+ "serde_json",
+ "web-sys",
+ "windows",
 ]
 
 [[package]]
@@ -431,7 +465,7 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 [[package]]
 name = "ecolor"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "bytemuck",
  "serde",
@@ -440,7 +474,7 @@ dependencies = [
 [[package]]
 name = "eframe"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "bytemuck",
  "cocoa",
@@ -471,7 +505,7 @@ dependencies = [
 [[package]]
 name = "egui"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "accesskit",
  "ahash",
@@ -485,7 +519,7 @@ dependencies = [
 [[package]]
 name = "egui-winit"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "arboard",
  "egui",
@@ -501,7 +535,7 @@ dependencies = [
 [[package]]
 name = "egui_glow"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "bytemuck",
  "egui",
@@ -515,7 +549,7 @@ dependencies = [
 [[package]]
 name = "emath"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "bytemuck",
  "serde",
@@ -548,7 +582,7 @@ dependencies = [
 [[package]]
 name = "epaint"
 version = "0.22.0"
-source = "git+https://github.com/emilk/egui.git?rev=9478e50d012c5138551c38cbee16b07bc1fcf283#9478e50d012c5138551c38cbee16b07bc1fcf283"
+source = "git+https://github.com/sagebind/egui.git?branch=persist-without-window#c023d724738a2a038e85c7dddd643190514debf8"
 dependencies = [
  "ab_glyph",
  "ahash",
@@ -622,13 +656,17 @@ dependencies = [
 name = "fmbqtimer"
 version = "2.0.0-alpha.1"
 dependencies = [
+ "android-wakelock",
  "android_logger",
+ "appstorage",
  "crossbeam-utils",
  "eframe",
  "env_logger",
  "hound",
  "include_dir",
+ "jni",
  "log",
+ "log-panics",
  "ndk",
  "time",
  "triple_buffer",
@@ -993,6 +1031,15 @@ name = "log"
 version = "0.4.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b06a4cde4c0f271a446782e3eff8de789548ce57dbc8eca9292c27f4a42004b4"
+
+[[package]]
+name = "log-panics"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68f9dd8546191c1850ecf67d22f5ff00a935b890d0e84713159a55495cc2ac5f"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "malloc_buf"
@@ -1439,6 +1486,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ryu"
+version = "1.0.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe232bdf6be8c8de797b22184ee71118d63780ea42ac85b61d1baa6d3b782ae9"
+
+[[package]]
 name = "same-file"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1490,6 +1543,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.22",
+]
+
+[[package]]
+name = "serde_json"
+version = "1.0.99"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46266871c240a00b8f503b877622fe33430b3c7d963bdc0f2adc511e54a1eae3"
+dependencies = [
+ "itoa",
+ "ryu",
+ "serde",
 ]
 
 [[package]]
@@ -1991,6 +2055,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
+name = "windows"
+version = "0.48.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e686886bc078bc1b0b600cac0147aadb815089b6e4da64016cbd754b6342700f"
+dependencies = [
+ "windows-targets 0.48.1",
+]
+
+[[package]]
 name = "windows-sys"
 version = "0.45.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2125,7 +2198,7 @@ checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
 [[package]]
 name = "winit"
 version = "0.28.6"
-source = "git+https://github.com/sagebind/winit.git?rev=00628439ebfb102b2989c8b423ab635352ad3a44#00628439ebfb102b2989c8b423ab635352ad3a44"
+source = "git+https://github.com/sagebind/winit.git?branch=android-activity-relaunch-patches#2cd710d1ba4af85fb649bfb289b8d6b257f79cb6"
 dependencies = [
  "android-activity",
  "bitflags",
@@ -2205,6 +2278,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "463705a63313cd4301184381c5e8042f0a7e9b4bb63653f216311d4ae74690b7"
 dependencies = [
  "nom",
+]
+
+[[package]]
+name = "xdg"
+version = "2.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "688597db5a750e9cad4511cb94729a078e274308099a0382b5b8203bbc767fee"
+dependencies = [
+ "home",
 ]
 
 [[package]]

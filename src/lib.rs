@@ -9,10 +9,15 @@ mod sounds;
 
 pub static BUILD_TIME_STR: &str = env!("BUILD_TIME");
 
-pub fn run_native(native_options: eframe::NativeOptions) -> eframe::Result<()> {
+pub struct PlatformContext {
+    #[cfg(target_os = "android")]
+    pub android_app: winit::platform::android::activity::AndroidApp,
+}
+
+pub fn run_native(native_options: eframe::NativeOptions, platform_ctx: PlatformContext) -> eframe::Result<()> {
     eframe::run_native(
         app::App::NAME,
         native_options,
-        Box::new(|ctx| Box::new(app::App::new(ctx))),
+        Box::new(move |ctx| Box::new(app::App::new(ctx, platform_ctx))),
     )
 }

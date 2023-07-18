@@ -5,7 +5,7 @@ use eframe::{
 
 use super::widgets::{heading, title};
 
-pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage) {
+pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage, platform_ctx: &crate::PlatformContext) {
     ui.add(title("Settings"));
 
     let mut enable_sounds = eframe::get_value::<bool>(storage, "enable-sounds").unwrap_or_default();
@@ -33,7 +33,7 @@ pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage) {
 
     #[cfg(target_os = "android")]
     {
-        let app = crate::platform::android::APP.get().unwrap();
+        let app = &platform_ctx.android_app;
         ui.label(format!("screen density: {:?}", app.config().density()));
         ui.label(format!("content rect: {:?}", app.content_rect()));
     }

@@ -30,6 +30,12 @@ export ANDROID_SDK_ROOT := $(ANDROID_HOME)
 export RUST_LOG := cargo_ndk=debug
 export CARGO_NDK_MAJOR_VERSION := 25
 
+# Load environment variables from .env files
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 
 .PHONY: all
 all: target/apk/$(APK_PACKAGE:%=%-signed.apk)
@@ -56,8 +62,7 @@ target/apk/$(APK_PACKAGE:%=%-unsigned.apk): $(APK_LIB_FILES) $(COMPILED_FILES)
 	mv $@-aligned $@
 
 %-signed.apk: %-unsigned.apk
-# TODO: Better way of signing
-	$(APKSIGNER) sign --ks /home/stephen/Seafile/Projects/FMBQTimer/signing.keystore --out $@ $<
+	$(APKSIGNER) sign --ks /home/stephen/Seafile/Projects/FMBQTimer/signing.keystore --ks-pass env:ANDROID_KEYSTORE_PASSWORD --out $@ $<
 
 target/apk/compiled/%: %
 	@mkdir -p $(@D)

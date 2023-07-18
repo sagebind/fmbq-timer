@@ -7,7 +7,9 @@ use eframe::{
     CreationContext,
 };
 
-use self::{colors::ORANGE};
+use crate::PlatformContext;
+
+use self::colors::ORANGE;
 use self::widgets::title;
 use self::{colors::BLUE, widgets::countdown_circle};
 
@@ -22,6 +24,7 @@ const APPEAL_TIME: Duration = Duration::from_secs(30);
 const TIME_OUT_TIME: Duration = Duration::from_secs(60);
 
 pub struct App {
+    platform_ctx: PlatformContext,
     timer: timer::Timer,
     settings_open: bool,
     content_margin: Margin,
@@ -30,26 +33,15 @@ pub struct App {
 impl App {
     pub const NAME: &str = "FMBQ Timer";
 
-    pub fn new(ctx: &CreationContext) -> Self {
+    pub fn new(ctx: &CreationContext, platform_ctx: PlatformContext) -> Self {
         log::info!("detected OS: {:?}", ctx.egui_ctx.os());
         log::info!("screen PPI: {}", ctx.egui_ctx.pixels_per_point());
-        // ctx.egui_ctx.set_pixels_per_point(4.0);
 
         if ctx.storage.is_none() {
             log::debug!("storage is required");
         }
 
-        let mut content_margin = Margin::default();
-
-        #[cfg(target_os = "android")]
-        {
-            let app = crate::platform::android::APP.get().unwrap();
-            let content_rect = app.content_rect();
-            // TODO: Why is the top of the content rect so large?
-            content_margin.top = 0.0;//(content_rect.top as f32 / ctx.egui_ctx.pixels_per_point()).clamp(0.0, 2.0);
-            content_margin.bottom = ctx.integration_info.window_info.size.y
-                - (content_rect.bottom as f32 / ctx.egui_ctx.pixels_per_point());
-        }
+        let content_margin = Margin::default();
 
         let mut style = ctx.egui_ctx.style().as_ref().clone();
         let rounding = Rounding::same(6.0);
@@ -64,6 +56,7 @@ impl App {
         ctx.egui_ctx.set_style(style);
 
         Self {
+            platform_ctx,
             timer: Default::default(),
             settings_open: false,
             content_margin,
@@ -80,10 +73,10 @@ impl eframe::App for App {
 
         #[cfg(target_os = "android")]
         {
-            let app = crate::platform::android::APP.get().unwrap();
-            let content_rect = app.content_rect();
+            let content_rect = self.platform_ctx.android_app.content_rect();
             // TODO: Why is the top of the content rect so large?
-            self.content_margin.top = (content_rect.top as f32 / ctx.pixels_per_point()).clamp(0.0, 32.0);
+            self.content_margin.top =
+                (content_rect.top as f32 / ctx.pixels_per_point()).clamp(0.0, 32.0);
             self.content_margin.bottom = frame.info().window_info.size.y
                 - (content_rect.bottom as f32 / ctx.pixels_per_point());
         }
@@ -95,7 +88,7 @@ impl eframe::App for App {
             ui.add_space(self.content_margin.top);
 
             if self.settings_open {
-                settings::settings_page(ui, frame.storage_mut().unwrap());
+                settings::settings_page(ui, frame.storage_mut().unwrap(), &self.platform_ctx);
                 ui.label(format!("screen PPI: {}", ctx.pixels_per_point()));
                 ui.label(format!("content margin: {:?}", self.content_margin));
             } else {
@@ -105,10 +98,13 @@ impl eframe::App for App {
 
         if !self.settings_open {
             egui::Area::new("countdown_circle_overlay")
-                .anchor(Align2::CENTER_TOP, vec2(0.0, 56.0 + self.content_margin.top))
+                .anchor(
+                    Align2::CENTER_TOP,
+                    vec2(0.0, 56.0 + self.content_margin.top),
+                )
                 .interactable(false)
                 .show(ctx, |ui| {
-                    let percent = if let timer::State::Running(remaining, total) = timer_result {
+                    let percent = if let timer::State::Running { remaining, total } = timer_result {
                         remaining.as_secs_f32() / total.as_secs_f32()
                     } else {
                         1.0
@@ -117,27 +113,27 @@ impl eframe::App for App {
                 });
 
             egui::Area::new("reset_button_overlay")
-                .anchor(Align2::CENTER_TOP, vec2(56.0, 176.0 + self.content_margin.top))
+                .anchor(
+                    Align2::CENTER_TOP,
+                    vec2(56.0, 176.0 + self.content_margin.top),
+                )
                 .show(ctx, |ui| {
-                    ui.add_visible_ui(
-                        matches!(timer_result, timer::State::Running(_, _)),
-                        |ui| {
-                            ui.with_layout(Layout::top_down(Align::Center), |ui| {
-                                if ui
-                                    .add(
-                                        Button::new(RichText::new("⟲").size(16.0))
-                                            .frame(false)
-                                            .min_size(vec2(40.0, 40.0))
-                                            .rounding(Rounding::same(40.0))
-                                            .fill(ORANGE),
-                                    )
-                                    .clicked()
-                                {
-                                    self.timer.reset();
-                                }
-                            });
-                        },
-                    );
+                    ui.add_visible_ui(timer_result.is_running(), |ui| {
+                        ui.with_layout(Layout::top_down(Align::Center), |ui| {
+                            if ui
+                                .add(
+                                    Button::new(RichText::new("⟲").size(16.0))
+                                        .frame(false)
+                                        .min_size(vec2(40.0, 40.0))
+                                        .rounding(Rounding::same(40.0))
+                                        .fill(ORANGE),
+                                )
+                                .clicked()
+                            {
+                                self.timer.reset();
+                            }
+                        });
+                    });
                 });
         }
 
@@ -175,7 +171,7 @@ impl eframe::App for App {
 
         // If we just started the timer this frame then we also need to start
         // repainting.
-        if matches!(self.timer.state(), timer::State::Running(_, _)) {
+        if self.timer.is_running() {
             ctx.request_repaint_after(Duration::from_millis(10));
         }
     }
@@ -187,7 +183,7 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
     ui.add_space(48.0);
 
     ui.vertical_centered(|ui| {
-        let value = if let timer::State::Running(remaining, _) = timer_result {
+        let value = if let timer::State::Running { remaining, .. } = timer_result {
             remaining.as_secs_f32()
         } else {
             0.0
@@ -195,7 +191,12 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
 
         if ui
             .add(
-                Label::new(RichText::new(format!("{:.1}", value)).size(64.0)).sense(Sense::click()),
+                Label::new(
+                    RichText::new(format!("{:.1}", value))
+                        .size(64.0)
+                        .color(ui.visuals().strong_text_color()),
+                )
+                .sense(Sense::click()),
             )
             .clicked()
         {
@@ -250,6 +251,5 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
             timer.test_audio();
             ui.ctx().request_repaint();
         }
-
     });
 }

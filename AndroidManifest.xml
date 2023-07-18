@@ -7,6 +7,7 @@
     package="org.fmbq.timer">
 
     <!-- <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="33" /> -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
