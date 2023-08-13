@@ -8,9 +8,9 @@ fn main() {
 
 
     if target_os == "android" {
-        println!("cargo:rerun-if-env-changed=ANDROID_HOME");
+        println!("cargo:rerun-if-env-changed=ANDROID_NDK_HOME");
 
-        if let Ok(ndk_home) = env::var("NDK_HOME") {
+        if let Ok(ndk_home) = env::var("ANDROID_NDK_HOME") {
             println!(
                 "cargo:rustc-link-search={}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/{}/30",
                 ndk_home,
