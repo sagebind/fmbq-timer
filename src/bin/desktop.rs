@@ -5,7 +5,9 @@ use fmbqtimer::PlatformContext;
 fn main() -> eframe::Result<()> {
     #[cfg(not(target_os = "android"))]
     {
-        let platform_ctx = PlatformContext {};
+        let platform_ctx = PlatformContext {
+            storage: appstorage::open("fmbqtimer"),
+        };
 
         fmbqtimer::run_native(
             eframe::NativeOptions {

@@ -13,12 +13,14 @@ impl FlatFileStorage {
     pub fn new(app_info: &crate::AppInfo) -> Self {
         let app_info = AppInfo {
             name: app_info.name,
-            author: "",
+            author: "StephenCoakley",
         };
 
         let path = app_dirs2::app_root(app_dirs2::AppDataType::UserData, &app_info)
             .unwrap()
             .join("storage.json");
+
+        log::debug!("discovered storage path: {:?}", path);
 
         Self::with_path(path)
     }

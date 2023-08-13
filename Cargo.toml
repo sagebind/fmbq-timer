@@ -20,7 +20,7 @@ path = "crates/appstorage"
 [dependencies.eframe]
 version = "0.22"
 default-features = false
-features = ["glow", "default_fonts", "persistence", "android-native-activity"]
+features = ["glow", "default_fonts", "android-native-activity"]
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.13"

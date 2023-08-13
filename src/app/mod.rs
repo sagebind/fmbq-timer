@@ -88,7 +88,7 @@ impl eframe::App for App {
             ui.add_space(self.content_margin.top);
 
             if self.settings_open {
-                settings::settings_page(ui, frame.storage_mut().unwrap(), &self.platform_ctx);
+                settings::settings_page(ui, &self.platform_ctx.storage, &self.platform_ctx);
                 ui.label(format!("screen PPI: {}", ctx.pixels_per_point()));
                 ui.label(format!("content margin: {:?}", self.content_margin));
             } else {
@@ -174,6 +174,10 @@ impl eframe::App for App {
         if self.timer.is_running() {
             ctx.request_repaint_after(Duration::from_millis(10));
         }
+    }
+
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        self.platform_ctx.storage.flush();
     }
 }
 

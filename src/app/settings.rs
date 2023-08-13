@@ -1,14 +1,15 @@
+use appstorage::Storage;
 use eframe::{
     egui::{Checkbox, Layout, Response, RichText, Ui, Widget},
-    emath::Align, Storage,
+    emath::Align,
 };
 
 use super::widgets::{heading, title};
 
-pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage, platform_ctx: &crate::PlatformContext) {
+pub fn settings_page(ui: &mut Ui, storage: &Storage, platform_ctx: &crate::PlatformContext) {
     ui.add(title("Settings"));
 
-    let mut enable_sounds = eframe::get_value::<bool>(storage, "enable-sounds").unwrap_or_default();
+    let mut enable_sounds = storage.get::<bool>("enable-sounds").unwrap_or_default();
     let mut my_bool = true;
 
     ui.add(Item {
@@ -60,7 +61,7 @@ pub fn settings_page(ui: &mut Ui, storage: &mut dyn Storage, platform_ctx: &crat
 
     ui.separator();
 
-    eframe::set_value(storage, "enable-sounds", &enable_sounds);
+    storage.set("enable-sounds", enable_sounds);
 }
 
 struct Item<W> {

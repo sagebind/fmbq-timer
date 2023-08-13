@@ -1,5 +1,7 @@
 APK_PACKAGE := org.fmbq.timer.dev
 LIB_NAME := fmbqtimer # name of the native library
+VERSION_CODE = $(shell date '+$(ANDROID_PLATFORM_VERSION)%y%j')
+VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
 ANDROID_TARGETS := armeabi-v7a arm64-v8a x86 x86_64
 
 SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
@@ -14,7 +16,10 @@ ZIPALIGN := $(ANDROID_BUILD_TOOLS_DIR)/zipalign
 AAPT2 := $(ANDROID_BUILD_TOOLS_DIR)/aapt2
 ADB := $(ANDROID_HOME)/platform-tools/adb
 APKSIGNER := $(ANDROID_BUILD_TOOLS_DIR)/apksigner
-AAPT2_LINK_OPTS := --auto-add-overlay --rename-manifest-package $(APK_PACKAGE) --min-sdk-version 26 --target-sdk-version $(ANDROID_PLATFORM_VERSION)
+AAPT2_LINK_OPTS := --auto-add-overlay --rename-manifest-package $(APK_PACKAGE) \
+	--min-sdk-version 26 --target-sdk-version $(ANDROID_PLATFORM_VERSION) \
+	--version-code $(VERSION_CODE) \
+	--version-name $(VERSION_NAME)
 
 APK_TARGET_ROOT_DIR := target/apk/root
 RESOURCE_FILES := $(shell find res -type f)
@@ -44,12 +49,28 @@ all: target/apk/$(APK_PACKAGE:%=%-signed.apk)
 clean:
 	cargo clean
 
+.PHONY: emulator
+emulator:
+	$(ANDROID_HOME)/emulator/emulator -avd $(EMULATOR_AVD) -netdelay none -netspeed full -no-snapshot -restart-when-stalled
+
 .PHONY: run
 run: target/apk/$(APK_PACKAGE:%=%-signed.apk)
-	# $(ANDROID_HOME)/emulator/emulator -avd $(EMULATOR_AVD) -netdelay none -netspeed full -no-snapshot -restart-when-stalled &
 	$(ADB) wait-for-device
 	$(ADB) install -t $<
 	$(ADB) shell monkey -p $(APK_PACKAGE) 1
+	$(ADB) logcat -v color -s fmbqtimer
+
+target/aab/$(APK_PACKAGE).aab: target/aab/$(APK_PACKAGE).zip target/aab/bundletool.jar
+	java -jar target/aab/bundletool.jar build-bundle --modules=$< --output=$@
+
+target/aab/bundletool.jar:
+	wget https://github.com/google/bundletool/releases/download/1.15.2/bundletool-all-1.15.2.jar -O $@
+
+target/aab/$(APK_PACKAGE).zip: $(APK_LIB_FILES) $(COMPILED_FILES)
+	-rm $@
+	@mkdir -p $(@D)
+	$(AAPT2) link $(AAPT2_LINK_OPTS) --proto-format -o $@ -I $(ANDROID_PLATFORM_JAR) --manifest $(ANDROID_MANIFEST) $(addprefix -R ,$(APK_FLAT_FILES))
+	cd $(APK_TARGET_ROOT_DIR) && zip --no-dir-entries --suffixes .so -r $(CURDIR)/$@ .
 
 # Build an actual APK
 target/apk/$(APK_PACKAGE:%=%-unsigned.apk): $(APK_LIB_FILES) $(COMPILED_FILES)

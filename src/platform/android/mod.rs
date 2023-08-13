@@ -55,6 +55,7 @@ pub fn android_main(app: AndroidApp) {
     };
 
     let platform_ctx = PlatformContext {
+        storage: appstorage::open("fmbqtimer"),
         android_app: app,
     };
 

@@ -10,6 +10,8 @@ mod sounds;
 pub static BUILD_TIME_STR: &str = env!("BUILD_TIME");
 
 pub struct PlatformContext {
+    pub storage: appstorage::Storage,
+
     #[cfg(target_os = "android")]
     pub android_app: winit::platform::android::activity::AndroidApp,
 }
