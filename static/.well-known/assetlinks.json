@@ -1,5 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target" : { "namespace": "android_app", "package_name": "org.fmbq.timer",
-                   "sha256_cert_fingerprints": ["C0:2E:68:41:BB:CF:70:DA:3C:A7:59:3D:CF:C4:0F:21:1A:63:F2:35:26:86:71:83:ED:3A:47:30:0C:97:C2:6E"] }
-    }]

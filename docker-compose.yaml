@@ -1,8 +1,0 @@
-version: '3.6'
-
-services:
-  fmbq-timer:
-    image: ghcr.io/sagebind/fmbq-timer/fmbq-timer:${TAG:-latest}
-    build: .
-    ports:
-      - 8000:80
