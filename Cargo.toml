@@ -1,0 +1,70 @@
+[package]
+name = "fmbqtimer"
+version = "2.0.0-alpha.1"
+edition = "2021"
+
+[lib]
+crate-type = ["lib", "cdylib"]
+
+[dependencies]
+crossbeam-utils = "0.8"
+hound = "3.5"
+include_dir = "0.7.3"
+log = "0.4"
+log-panics = "2.1"
+triple_buffer = "6.2"
+
+[dependencies.appstorage]
+path = "crates/appstorage"
+
+[dependencies.eframe]
+version = "0.22"
+default-features = false
+features = ["glow", "default_fonts", "android-native-activity"]
+
+[target.'cfg(target_os = "android")'.dependencies]
+android_logger = "0.13"
+android-wakelock = "0.1"
+jni = "0.21"
+
+[target.'cfg(target_os = "android")'.dependencies.ndk]
+version = "0.7"
+features = ["audio"]
+
+[target.'cfg(target_os = "android")'.dependencies.winit]
+version = "0.28"
+default-features = false
+features = ["android-native-activity"]
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+env_logger = "0.10"
+
+[build-dependencies.time]
+version = "0.3"
+features = ["formatting", "local-offset"]
+
+# Pull in fix for crash on Android activity suspend/resume for the glow backend.
+# See:
+#
+# - https://github.com/rust-mobile/rust-android-examples/issues/6
+# - https://github.com/emilk/egui/issues/3079
+# - https://github.com/emilk/egui/pull/3080
+#
+# This should be fixed in egui 0.23.
+[patch.crates-io.eframe]
+git = "https://github.com/sagebind/egui.git"
+branch = "persist-without-window"
+
+# Pull in backported fix for volume keys being captured and ignored by default,
+# instead of being handled the default way by Android. See
+# https://github.com/rust-windowing/winit/pull/2748.
+[patch.crates-io.winit]
+git = "https://github.com/sagebind/winit.git"
+branch = "android-activity-relaunch-patches"
+
+[patch.crates-io.android-activity]
+git = "https://github.com/sagebind/android-activity.git"
+branch = "fix-deadlock-on-ondestroy"
+
+[workspace]
+members = ["crates/*"]
