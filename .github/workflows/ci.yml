@@ -9,5 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk
+
       - name: Build
         run: make -j4
