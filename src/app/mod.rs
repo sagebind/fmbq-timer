@@ -3,15 +3,16 @@ use std::time::Duration;
 use eframe::{
     egui::{self, Button, Frame, Label, Layout, Margin, RichText, Sense, Ui},
     emath::{Align, Align2},
-    epaint::{vec2, Color32, Rounding},
+    epaint::{text::LayoutJob, vec2, Color32, FontId, Rounding},
     CreationContext,
 };
 
 use crate::PlatformContext;
 
-use self::colors::ORANGE;
-use self::widgets::title;
-use self::{colors::BLUE, widgets::countdown_circle};
+use self::{
+    colors::*,
+    widgets::{countdown_circle, title},
+};
 
 mod colors;
 mod settings;
@@ -49,9 +50,14 @@ impl App {
         style.visuals.widgets.inactive.rounding = rounding;
         style.visuals.widgets.active.rounding = rounding;
         style.visuals.widgets.hovered.rounding = rounding;
-        style.visuals.widgets.active.bg_fill = BLUE;
-        style.visuals.selection.bg_fill = BLUE;
-        style.visuals.button_frame = false;
+        style.visuals.widgets.inactive.bg_fill = PURPLE;
+        style.visuals.widgets.inactive.weak_bg_fill = PURPLE;
+        style.visuals.widgets.active.bg_fill = PURPLE;
+        style.visuals.widgets.active.weak_bg_fill = PURPLE;
+        style.visuals.widgets.hovered.bg_fill = PURPLE;
+        style.visuals.widgets.hovered.weak_bg_fill = PURPLE;
+        style.visuals.selection.bg_fill = PURPLE;
+        style.visuals.button_frame = true;
         style.visuals.widgets.inactive.fg_stroke.color = Color32::WHITE;
         ctx.egui_ctx.set_style(style);
 
@@ -112,17 +118,31 @@ impl eframe::App for App {
                     ui.add(countdown_circle(160.0, 5.0, percent));
                 });
 
+            // Create a special area that sits on top of the main layer to hold
+            // the timer reset button.
             egui::Area::new("reset_button_overlay")
                 .anchor(
                     Align2::CENTER_TOP,
                     vec2(56.0, 176.0 + self.content_margin.top),
                 )
+                // Disable all interactions when the timer isn't running. This
+                // ensures that clicks will click through to the timer on the
+                // main layer when the button is hidden.
+                .interactable(timer_result.is_running())
                 .show(ctx, |ui| {
-                    ui.add_visible_ui(timer_result.is_running(), |ui| {
-                        ui.with_layout(Layout::top_down(Align::Center), |ui| {
+                    // Hide the button when the timer isn't running. We use
+                    // visibility instead of just not rendering the area to
+                    // avoid weird jumpiness that can sometimes happen when
+                    // areas are added or removed.
+                    ui.set_visible(timer_result.is_running());
+
+                    ui.allocate_ui_with_layout(
+                        vec2(40.0, 40.0),
+                        ui.layout().with_cross_align(egui::Align::Center),
+                        |ui| {
                             if ui
                                 .add(
-                                    Button::new(RichText::new("⟲").size(16.0))
+                                    Button::new(RichText::new("✖").size(16.0))
                                         .frame(false)
                                         .min_size(vec2(40.0, 40.0))
                                         .rounding(Rounding::same(40.0))
@@ -132,8 +152,8 @@ impl eframe::App for App {
                             {
                                 self.timer.reset();
                             }
-                        });
-                    });
+                        },
+                    );
                 });
         }
 
@@ -184,39 +204,53 @@ impl eframe::App for App {
 fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) {
     ui.add(title("FMBQ Timer"));
 
-    ui.add_space(48.0);
+    let response = ui
+        .vertical_centered_justified(|ui| {
+            ui.add_space(48.0);
 
-    ui.vertical_centered(|ui| {
-        let value = if let timer::State::Running { remaining, .. } = timer_result {
-            remaining.as_secs_f32()
-        } else {
-            0.0
-        };
+            ui.vertical_centered(|ui| {
+                let value = if let timer::State::Running { remaining, .. } = timer_result {
+                    remaining.as_secs_f32()
+                } else {
+                    0.0
+                };
 
-        if ui
-            .add(
-                Label::new(
+                ui.add(Label::new(
                     RichText::new(format!("{:.1}", value))
                         .size(64.0)
                         .color(ui.visuals().strong_text_color()),
-                )
-                .sense(Sense::click()),
-            )
-            .clicked()
-        {
-            timer.start(ANSWER_TIME);
-            ui.ctx().request_repaint();
-        }
-    });
+                ));
+            });
 
-    ui.add_space(64.0);
+            ui.add_space(64.0);
+        })
+        .response;
+
+    if response.interact(egui::Sense::click()).clicked() {
+        timer.start(ANSWER_TIME);
+        ui.ctx().request_repaint();
+    }
+
+    // We want to sense a click in the timer area without actually capturing the interaction.
+    // if let Some(pos) = ui.input(|i| {
+    //     if i.pointer.any_click() {
+    //         i.pointer.interact_pos()
+    //     } else {
+    //         None
+    //     }
+    // }) {
+    //     if response.rect.contains(pos) {
+    //         timer.start(ANSWER_TIME);
+    //         ui.ctx().request_repaint();
+    //     }
+    // }
 
     ui.vertical_centered_justified(|ui| {
         if ui
             .add(
                 Button::new(RichText::new("Answer").size(20.0))
                     .min_size(vec2(200.0, 48.0))
-                    .fill(Color32::from_rgb(0x2E, 0xCC, 0x40)),
+                    .fill(BABY_BLUE),
             )
             .clicked()
         {
@@ -226,7 +260,7 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
 
         ui.add_space(8.0);
 
-        if ui.add(Button::new("Prejump").fill(BLUE)).clicked() {
+        if ui.add(Button::new("Prejump")).clicked() {
             timer.start(PREJUMP_TIME);
             ui.ctx().request_repaint();
         }
@@ -235,14 +269,14 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
 
         ui.columns(2, |columns| {
             columns[0].with_layout(Layout::top_down_justified(Align::Center), |ui| {
-                if ui.add(Button::new("Appeal").fill(BLUE)).clicked() {
+                if ui.add(Button::new("Appeal")).clicked() {
                     timer.start(APPEAL_TIME);
                     ui.ctx().request_repaint();
                 }
             });
 
             columns[1].with_layout(Layout::top_down_justified(Align::Center), |ui| {
-                if ui.add(Button::new("Time Out").fill(BLUE)).clicked() {
+                if ui.add(Button::new("Time Out")).clicked() {
                     timer.start(TIME_OUT_TIME);
                     ui.ctx().request_repaint();
                 }
@@ -251,7 +285,7 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
 
         ui.add_space(8.0);
 
-        if ui.add(Button::new("Test timer sound").fill(BLUE)).clicked() {
+        if ui.add(Button::new("Test timer sound")).clicked() {
             timer.test_audio();
             ui.ctx().request_repaint();
         }

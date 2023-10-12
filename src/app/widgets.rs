@@ -7,6 +7,8 @@ use eframe::{
     epaint::{pos2, vec2, Color32},
 };
 
+use super::colors::*;
+
 pub fn title(text: impl Display) -> impl Widget {
     move |ui: &mut Ui| {
         ui.vertical(|ui| {
