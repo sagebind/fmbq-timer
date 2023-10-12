@@ -64,6 +64,7 @@ pub fn settings_page(ui: &mut Ui, storage: &Storage, platform_ctx: &crate::Platf
     storage.set("enable-sounds", enable_sounds);
 }
 
+/// An item on the settings page.
 struct Item<W> {
     label: RichText,
     description: Option<RichText>,

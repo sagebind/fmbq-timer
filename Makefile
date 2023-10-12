@@ -1,4 +1,4 @@
-APK_PACKAGE := org.fmbq.timer.dev
+APK_PACKAGE := org.fmbq.timer
 LIB_NAME := fmbqtimer # name of the native library
 VERSION_CODE = $(shell date '+$(ANDROID_PLATFORM_VERSION)%y%j')
 VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
