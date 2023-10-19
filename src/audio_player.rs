@@ -53,7 +53,7 @@ mod cpal {
             let (mut queue, mut output) = crate::audio::queue::queue();
 
             let config = device.supported_output_configs().unwrap()
-            .filter(|config| config.channels() == 2)
+            .filter(|config| config.channels() == 1)
             .filter(|config| config.sample_format() == SampleFormat::I16)
             .next()
             .unwrap()

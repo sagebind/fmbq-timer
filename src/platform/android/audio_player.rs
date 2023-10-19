@@ -27,10 +27,10 @@ impl AAudioPlayer {
                     .unwrap()
                     // .content_type(ndk::audio::AudioContentType::Sonification)
                     .format(AudioFormat::PCM_I16)
-                    .channel_count(2)
+                    .channel_count(1)
                     .sample_rate(44100)
                     .data_callback(Box::new(move |_stream, buf, frames| {
-                        let channels = 2; // item.spec.channels
+                        let channels = 1; // item.spec.channels
                         let num_samples = frames as usize * channels as usize;
                         let buf: &mut [i16] = unsafe {
                             std::slice::from_raw_parts_mut(buf.cast::<i16>(), num_samples)
