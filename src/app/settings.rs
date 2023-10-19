@@ -8,11 +8,11 @@ use crate::sounds::SoundLibrary;
 
 use super::{widgets::{heading, title}, timer::Timer};
 
-pub fn settings_page(ui: &mut Ui, storage: &Storage, timer: &mut Timer, platform_ctx: &crate::PlatformContext) {
+pub fn settings_page(ui: &mut Ui, storage: &Storage, timer: &mut Timer, _platform_ctx: &crate::PlatformContext) {
     ui.add(title("Settings"));
 
     ScrollArea::vertical().show(ui, |ui| {
-        let mut enable_sounds = storage.get::<bool>("enable-sounds").unwrap_or_default();
+        let mut enable_sounds = storage.get::<bool>("enable-sounds").unwrap_or(true);
         let mut sound = storage.get::<String>("sound").unwrap_or_else(|| "correct".to_string());
         let mut my_bool = true;
 
