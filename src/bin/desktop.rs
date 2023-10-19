@@ -5,6 +5,8 @@ use fmbqtimer::PlatformContext;
 fn main() -> eframe::Result<()> {
     #[cfg(not(target_os = "android"))]
     {
+        env_logger::init();
+
         let platform_ctx = PlatformContext {
             storage: appstorage::open("fmbqtimer"),
         };

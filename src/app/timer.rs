@@ -1,4 +1,5 @@
 use crate::{audio_player::AudioPlayer, sounds::SoundLibrary};
+use appstorage::Storage;
 use std::{
     sync::mpsc::{channel, Receiver, RecvTimeoutError, Sender},
     thread::{self, JoinHandle},
@@ -40,11 +41,11 @@ impl State {
 
 impl Timer {
     /// Create a new timer.
-    pub fn new() -> Self {
-        Self::with_update_resolution(DEFAULT_RESOLUTION)
+    pub fn new(storage: Storage) -> Self {
+        Self::with_update_resolution(DEFAULT_RESOLUTION, storage)
     }
 
-    pub fn with_update_resolution(update_resolution: Duration) -> Self {
+    pub fn with_update_resolution(update_resolution: Duration, storage: Storage) -> Self {
         let (sender, receiver) = channel();
         let (input, output) = triple_buffer(&State::Stopped);
 
@@ -59,6 +60,7 @@ impl Timer {
                     duration: Duration::ZERO,
                     update_resolution,
                     audio_player: crate::audio_player::create(),
+                    storage,
 
                     #[cfg(target_os = "android")]
                     wake_lock_guard: None,
@@ -102,12 +104,6 @@ impl Timer {
     }
 }
 
-impl Default for Timer {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 /// Background worker
 struct Worker {
     messages: Receiver<Message>,
@@ -116,6 +112,7 @@ struct Worker {
     duration: Duration,
     update_resolution: Duration,
     audio_player: crate::audio_player::Impl,
+    storage: Storage,
 
     #[cfg(target_os = "android")]
     wake_lock_guard: Option<android_wakelock::Guard<'static>>,
@@ -187,8 +184,7 @@ impl Worker {
 
         static WAKE_LOCK: OnceLock<android_wakelock::WakeLock> = OnceLock::new();
 
-        WAKE_LOCK
-            .get_or_init(|| android_wakelock::partial("fmbqtimer:timer").unwrap())
+        WAKE_LOCK.get_or_init(|| android_wakelock::partial("fmbqtimer:timer").unwrap())
     }
 
     fn handle(&mut self, message: Message) {
@@ -241,7 +237,13 @@ impl Worker {
     }
 
     fn start_alarm_audio(&self) {
-        let (spec, data) = SoundLibrary::get().get_any();
-        self.audio_player.play_audio(spec, data.into_inner());
+        let sound_name = self
+            .storage
+            .get::<String>("sound")
+            .unwrap_or_else(|| "correct".to_owned());
+
+        if let Some((spec, data)) = SoundLibrary::get().get_by_name(&sound_name) {
+            self.audio_player.play_audio(spec, data.into_inner());
+        }
     }
 }

@@ -7,11 +7,11 @@ use eframe::{
     CreationContext,
 };
 
-use crate::PlatformContext;
+use crate::{PlatformContext, app::timer::Timer};
 
 use self::{
     colors::*,
-    widgets::{countdown_circle, title},
+    widgets::{countdown_circle, title, toolbar_button},
 };
 
 mod colors;
@@ -62,8 +62,8 @@ impl App {
         ctx.egui_ctx.set_style(style);
 
         Self {
+            timer: Timer::new(platform_ctx.storage.clone()),
             platform_ctx,
-            timer: Default::default(),
             settings_open: false,
             content_margin,
         }
@@ -94,9 +94,7 @@ impl eframe::App for App {
             ui.add_space(self.content_margin.top);
 
             if self.settings_open {
-                settings::settings_page(ui, &self.platform_ctx.storage, &self.platform_ctx);
-                ui.label(format!("screen PPI: {}", ctx.pixels_per_point()));
-                ui.label(format!("content margin: {:?}", self.content_margin));
+                settings::settings_page(ui, &self.platform_ctx.storage, &mut self.timer, &self.platform_ctx);
             } else {
                 main_page(ui, &mut self.timer, timer_result);
             }
@@ -166,7 +164,7 @@ impl eframe::App for App {
                 ui.columns(2, |columns| {
                     columns[0].with_layout(Layout::top_down(Align::Center), |ui| {
                         if ui
-                            .selectable_label(!self.settings_open, "⏱\nTimer")
+                            .add(toolbar_button('⏱', "Timer", !self.settings_open))
                             .clicked()
                         {
                             self.settings_open = false;
@@ -175,7 +173,7 @@ impl eframe::App for App {
 
                     columns[1].vertical_centered(|ui| {
                         if ui
-                            .selectable_label(self.settings_open, "⚙\nSettings")
+                            .add(toolbar_button('⚙', "Settings", self.settings_open))
                             .clicked()
                         {
                             self.settings_open = true;

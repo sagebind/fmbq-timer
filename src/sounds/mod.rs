@@ -1,10 +1,10 @@
 //! Sound library management.
 
 use hound::{WavReader, WavSpec};
-use std::{collections::HashMap, io::Cursor, sync::OnceLock};
+use std::{collections::BTreeMap, io::Cursor, sync::OnceLock};
 
 pub struct SoundLibrary {
-    sounds: HashMap<String, StaticWav>,
+    sounds: BTreeMap<String, StaticWav>,
 }
 
 impl SoundLibrary {
@@ -15,23 +15,33 @@ impl SoundLibrary {
     }
 
     pub fn load() -> Self {
-        let mut sounds = HashMap::new();
+        let mut sounds = BTreeMap::new();
 
         static WAV_DIR: include_dir::Dir =
             include_dir::include_dir!("$CARGO_MANIFEST_DIR/src/sounds/wav");
 
         for file in WAV_DIR.files() {
-            let name = file.path().file_stem().unwrap().to_str().unwrap().to_owned();
+            let name = file
+                .path()
+                .file_stem()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_owned();
             sounds.insert(name, StaticWav::new(file.contents()));
         }
 
         Self { sounds }
     }
 
-    pub fn get_any(&self) -> (WavSpec, Cursor<Vec<i16>>) {
-        let sound = self.sounds.get("correct").unwrap();
+    pub fn get_by_name(&self, name: &str) -> Option<(WavSpec, Cursor<Vec<i16>>)> {
+        self.sounds
+            .get(name)
+            .map(|sound| (sound.spec, Cursor::new(sound.samples.clone())))
+    }
 
-        (sound.spec, Cursor::new(sound.samples.clone()))
+    pub fn get_names(&self) -> Vec<String> {
+        self.sounds.keys().cloned().collect()
     }
 }
 

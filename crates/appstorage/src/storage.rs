@@ -45,7 +45,7 @@ impl Drop for Storage {
     }
 }
 
-pub(crate) trait StorageBackend {
+pub(crate) trait StorageBackend: Send {
     fn get(&self, key: &str) -> Option<serde_json::Value>;
 
     fn set(&mut self, key: &str, value: serde_json::Value);

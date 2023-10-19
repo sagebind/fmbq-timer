@@ -3,7 +3,7 @@
 use std::{f32::consts::PI, fmt::Display};
 
 use eframe::{
-    egui::{Label, RichText, Sense, Ui, Widget},
+    egui::{Button, Id, Label, RichText, SelectableLabel, Sense, Ui, Widget},
     epaint::{pos2, vec2, Color32},
 };
 
@@ -71,5 +71,24 @@ pub fn countdown_circle(size: f32, stroke: f32, percent: f32) -> impl Widget {
         }
 
         response
+    }
+}
+
+pub fn toolbar_button(icon: char, label: &str, selected: bool) -> impl Widget + '_ {
+    let text_color = if selected {
+        Color32::LIGHT_BLUE
+    } else {
+        Color32::GRAY
+    };
+
+    move |ui: &mut Ui| {
+        ui.push_id(label, |ui| {
+            ui.vertical_centered(|ui| {
+                ui.label(RichText::new(icon.to_string()).size(18.0).color(text_color));
+                ui.label(RichText::new(label).small().color(text_color));
+            });
+        })
+        .response
+        .interact(eframe::egui::Sense::click())
     }
 }
