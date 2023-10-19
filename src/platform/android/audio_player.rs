@@ -21,7 +21,7 @@ impl AAudioPlayer {
         Self {
             sender,
             join_handle: Some(thread::spawn(move || {
-                let (mut input, mut output) = triple_buffer::triple_buffer(&PlayingItem::silence());
+                let (mut input, mut output) = crate::audio::queue::queue();
 
                 let stream = AudioStreamBuilder::new()
                     .unwrap()
@@ -29,25 +29,18 @@ impl AAudioPlayer {
                     .format(AudioFormat::PCM_I16)
                     .channel_count(2)
                     .sample_rate(44100)
-                    .data_callback(Box::new(move |s, buf, frames| {
-                        output.update();
-                        let item = output.output_buffer();
+                    .data_callback(Box::new(move |_stream, buf, frames| {
+                        let channels = 2; // item.spec.channels
+                        let num_samples = frames as usize * channels as usize;
+                        let buf: &mut [i16] = unsafe {
+                            std::slice::from_raw_parts_mut(buf.cast::<i16>(), num_samples)
+                        };
 
-                        if item.index >= item.data.len() {
+                        if output.read(buf) == buf.len() {
+                            AudioCallbackResult::Continue
+                        } else {
                             let _ = callback_sender.send(Message::Stop);
                             AudioCallbackResult::Stop
-                        } else {
-                            let num_samples = frames as usize * item.spec.channels as usize;
-                            let buf: &mut [i16] = unsafe {
-                                std::slice::from_raw_parts_mut(buf.cast::<i16>(), num_samples)
-                            };
-
-                            for i in 0..buf.len() {
-                                buf[i] = item.data.get(item.index + i).cloned().unwrap_or_default();
-                            }
-                            item.index += buf.len();
-
-                            AudioCallbackResult::Continue
                         }
                     }))
                     .open_stream()
@@ -55,8 +48,8 @@ impl AAudioPlayer {
 
                 for message in receiver {
                     match message {
-                        Message::Play(item) => {
-                            input.write(item);
+                        Message::Play { spec, data } => {
+                            input.play_now(spec, data);
 
                             if !matches!(
                                 stream.get_state(),
@@ -87,13 +80,7 @@ impl Default for AAudioPlayer {
 
 impl AudioPlayer for AAudioPlayer {
     fn play_audio(&self, spec: WavSpec, data: Vec<i16>) {
-        let item = PlayingItem {
-            spec,
-            data,
-            index: 0,
-        };
-
-        self.sender.send(Message::Play(item)).unwrap();
+        self.sender.send(Message::Play { spec, data }).unwrap();
     }
 }
 
@@ -107,30 +94,9 @@ impl Drop for AAudioPlayer {
     }
 }
 
+#[derive(Clone, Debug)]
 enum Message {
-    Play(PlayingItem),
+    Play { spec: WavSpec, data: Vec<i16> },
     Stop,
     Shutdown,
-}
-
-#[derive(Clone, Debug)]
-struct PlayingItem {
-    spec: WavSpec,
-    data: Vec<i16>,
-    index: usize,
-}
-
-impl PlayingItem {
-    fn silence() -> Self {
-        Self {
-            spec: WavSpec {
-                channels: 2,
-                sample_rate: 44100,
-                bits_per_sample: 16,
-                sample_format: hound::SampleFormat::Int,
-            },
-            data: vec![],
-            index: 0,
-        }
-    }
 }

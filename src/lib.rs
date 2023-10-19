@@ -4,6 +4,7 @@
 
 pub mod platform;
 mod app;
+mod audio;
 mod audio_player;
 mod sounds;
 

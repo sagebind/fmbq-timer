@@ -1,6 +1,6 @@
 use appstorage::Storage;
 use eframe::{
-    egui::{Checkbox, Layout, Response, RichText, Ui, Widget},
+    egui::{Checkbox, ComboBox, Layout, Response, RichText, Ui, Widget},
     emath::Align,
 };
 
@@ -27,7 +27,12 @@ pub fn settings_page(ui: &mut Ui, storage: &Storage, platform_ctx: &crate::Platf
     ui.add(Item {
         label: "Timer sound".into(),
         description: None,
-        value: Checkbox::without_text(&mut my_bool),
+
+        value: |ui: &mut Ui| {
+            ComboBox::from_id_source("timer_sound")
+                .show_ui(ui, |ui| {})
+                .response
+        },
     });
 
     ui.add(heading("Debug Info"));
@@ -48,10 +53,7 @@ pub fn settings_page(ui: &mut Ui, storage: &Storage, platform_ctx: &crate::Platf
         value: |ui: &mut Ui| {
             ui.with_layout(Layout::top_down(Align::Max), |ui| {
                 ui.label(env!("CARGO_PKG_VERSION"));
-                ui.weak(format!(
-                    "build date {}",
-                    crate::BUILD_TIME_STR
-                ));
+                ui.weak(format!("build date {}", crate::BUILD_TIME_STR));
             })
             .response
         },
