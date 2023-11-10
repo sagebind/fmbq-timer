@@ -21,8 +21,11 @@ AAPT2_LINK_OPTS := --auto-add-overlay --rename-manifest-package $(APK_PACKAGE) \
 	--version-code $(VERSION_CODE) \
 	--version-name $(VERSION_NAME)
 
+ICON_SVG := images/icon.svg
+ICON_RESOURCE_FILES := res/mipmap-ldpi/ic_launcher.png res/mipmap-mdpi/ic_launcher.png res/mipmap-hdpi/ic_launcher.png res/mipmap-xhdpi/ic_launcher.png res/mipmap-xxhdpi/ic_launcher.png res/mipmap-xxxhdpi/ic_launcher.png
+
 APK_TARGET_ROOT_DIR := target/apk/root
-RESOURCE_FILES := $(shell find res -type f)
+RESOURCE_FILES := $(shell find res -type f) $(ICON_RESOURCE_FILES)
 COMPILED_FILES := $(addprefix target/apk/compiled/,$(RESOURCE_FILES))
 APK_LIB_FILES := $(ANDROID_TARGETS:%=$(APK_TARGET_ROOT_DIR)/lib/%/$(LIB_NAME:%=lib%.so))
 ANDROID_MANIFEST := AndroidManifest.xml
@@ -94,3 +97,27 @@ target/apk/compiled/%: %
 $(APK_LIB_FILES) &: $(SRC_FILES)
 	@mkdir -p $(APK_TARGET_ROOT_DIR)/lib
 	$(CARGO_NDK) --output-dir $(APK_TARGET_ROOT_DIR)/lib $(ANDROID_TARGETS:%=--target %) build --release
+
+res/mipmap-ldpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 36 $(ICON_SVG) -o $@
+
+res/mipmap-mdpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 48 $(ICON_SVG) -o $@
+
+res/mipmap-hdpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 72 $(ICON_SVG) -o $@
+
+res/mipmap-xhdpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 96 $(ICON_SVG) -o $@
+
+res/mipmap-xxhdpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 144 $(ICON_SVG) -o $@
+
+res/mipmap-xxxhdpi/ic_launcher.png:
+	@mkdir -p $(@D)
+	inkscape --batch-process -w 192 $(ICON_SVG) -o $@

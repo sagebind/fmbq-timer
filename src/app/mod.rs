@@ -89,22 +89,6 @@ impl eframe::App for App {
 
         let timer_result = self.timer.state();
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            // Account for mobile display margins
-            ui.add_space(self.content_margin.top);
-
-            if self.settings_open {
-                settings::settings_page(
-                    ui,
-                    &self.platform_ctx.storage,
-                    &mut self.timer,
-                    &self.platform_ctx,
-                );
-            } else {
-                main_page(ui, &mut self.timer, timer_result);
-            }
-        });
-
         egui::TopBottomPanel::bottom("toolbar")
             .frame(Frame::none().fill(Color32::from_white_alpha(2)))
             .show_separator_line(false)
@@ -136,6 +120,22 @@ impl eframe::App for App {
                 // Account for mobile display margins
                 ui.add_space(self.content_margin.bottom);
             });
+
+        egui::CentralPanel::default().show(ctx, |ui| {
+            // Account for mobile display margins
+            ui.add_space(self.content_margin.top);
+
+            if self.settings_open {
+                settings::settings_page(
+                    ui,
+                    &self.platform_ctx.storage,
+                    &mut self.timer,
+                    &self.platform_ctx,
+                );
+            } else {
+                main_page(ui, &mut self.timer, timer_result);
+            }
+        });
 
         // If we just started the timer this frame then we also need to start
         // repainting.
@@ -169,23 +169,20 @@ fn main_page(ui: &mut Ui, timer: &mut timer::Timer, timer_result: timer::State) 
 fn timer_display(ui: &mut Ui, timer: &mut Timer, timer_result: timer::State) {
     let response = ui
         .vertical_centered_justified(|ui| {
-            let percent = if let timer::State::Running { remaining, total } = timer_result {
-                remaining.as_secs_f32() / total.as_secs_f32()
-            } else {
-                1.0
+            let (percent, value) = match timer_result {
+                timer::State::Running { remaining, total } => (
+                    remaining.as_secs_f32() / total.as_secs_f32(),
+                    remaining.as_secs_f32(),
+                ),
+                _ => (1.0, 0.0),
             };
 
             let circle_response = ui.add(countdown_circle(160.0, 5.0, percent));
-
-            let value = if let timer::State::Running { remaining, .. } = timer_result {
-                remaining.as_secs_f32()
-            } else {
-                0.0
-            };
+            let circle_rect = circle_response.rect;
 
             // Draw a label directly at the center of the countdown circle.
             ui.put(
-                circle_response.rect,
+                circle_rect,
                 Label::new(
                     RichText::new(format!("{:.1}", value))
                         .size(60.0)
@@ -197,8 +194,8 @@ fn timer_display(ui: &mut Ui, timer: &mut Timer, timer_result: timer::State) {
             // to reset the timer.
             if timer_result.is_running() {
                 let cancel_button_area = Rect::from_two_pos(
-                    circle_response.rect.center_bottom() + vec2(40.0, -40.0),
-                    circle_response.rect.center_bottom() + vec2(80.0, 0.0),
+                    circle_rect.center_bottom() + vec2(40.0, -40.0),
+                    circle_rect.center_bottom() + vec2(80.0, 0.0),
                 );
 
                 // Place the button on top of the countdown circle at the bottom

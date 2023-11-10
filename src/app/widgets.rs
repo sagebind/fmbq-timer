@@ -4,7 +4,7 @@ use std::{f32::consts::PI, fmt::Display};
 
 use eframe::{
     egui::{Button, Id, Label, RichText, SelectableLabel, Sense, Ui, Widget},
-    epaint::{pos2, vec2, Color32},
+    epaint::{pos2, vec2, Color32, Rect, Stroke},
 };
 
 use super::colors::*;
@@ -83,6 +83,19 @@ pub fn toolbar_button(icon: char, label: &str, selected: bool) -> impl Widget + 
 
     move |ui: &mut Ui| {
         ui.push_id(label, |ui| {
+            if selected {
+                let center_top = ui.available_rect_before_wrap().center_top();
+                let shadow_area =
+                    Rect::from_two_pos(center_top - vec2(24.0, 2.0), center_top + vec2(24.0, 36.0));
+
+                ui.painter().rect(
+                    shadow_area,
+                    8.0,
+                    Color32::from_rgba_unmultiplied(255, 255, 255, 2),
+                    Stroke::NONE,
+                );
+            }
+
             ui.vertical_centered(|ui| {
                 ui.label(RichText::new(icon.to_string()).size(18.0).color(text_color));
                 ui.label(RichText::new(label).small().color(text_color));

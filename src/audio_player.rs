@@ -46,31 +46,36 @@ mod cpal {
     impl CpalAudioPlayer {
         pub fn new() -> Self {
             let host = cpal::default_host();
-            let device = host
-                .default_output_device()
-                .unwrap();
+            let device = host.default_output_device().unwrap();
 
             let (mut queue, mut output) = crate::audio::queue::queue();
 
-            let config = device.supported_output_configs().unwrap()
-            .filter(|config| config.channels() == 1)
-            .filter(|config| config.sample_format() == SampleFormat::I16)
-            .next()
-            .unwrap()
-            .with_sample_rate(cpal::SampleRate(44100));
-            let stream = device.build_output_stream(
-                &config.config(),
-                move |data: &mut [i16], _: &cpal::OutputCallbackInfo| {
-                    output.read(data);
-                    // react to stream events and read or write stream data here.
-                },
-                move |err| {
-                    // react to errors here.
-                },
-                None // None=blocking, Some(Duration)=timeout
-            ).unwrap();
+            let config = device
+                .supported_output_configs()
+                .unwrap()
+                .filter(|config| config.channels() == 1)
+                .filter(|config| config.sample_format() == SampleFormat::I16)
+                .next()
+                .unwrap()
+                .with_sample_rate(cpal::SampleRate(44100));
+            let stream = device
+                .build_output_stream(
+                    &config.config(),
+                    move |data: &mut [i16], _: &cpal::OutputCallbackInfo| {
+                        output.read(data);
+                        // react to stream events and read or write stream data here.
+                    },
+                    move |err| {
+                        // react to errors here.
+                    },
+                    None, // None=blocking, Some(Duration)=timeout
+                )
+                .unwrap();
 
-            Self { stream, queue: Mutex::new(queue) }
+            Self {
+                stream,
+                queue: Mutex::new(queue),
+            }
         }
     }
 
