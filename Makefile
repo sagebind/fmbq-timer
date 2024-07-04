@@ -5,10 +5,11 @@ VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
 ANDROID_TARGETS := armeabi-v7a arm64-v8a x86 x86_64
 
 SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
-export ANDROID_NDK_HOME ?= $(ANDROID_HOME)/ndk/25.1.8937393
-ANDROID_PLATFORM_VERSION := 33
+ANDROID_NDK_VERSION := 26.3.11579264
+export ANDROID_NDK_HOME ?= $(ANDROID_HOME)/ndk/$(ANDROID_NDK_VERSION)
+ANDROID_PLATFORM_VERSION := 34
 ANDROID_PLATFORM_JAR := $(ANDROID_HOME)/platforms/android-$(ANDROID_PLATFORM_VERSION)/android.jar
-ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/33.0.0
+ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/$(ANDROID_PLATFORM_VERSION).0.0
 
 CARGO_NDK := cargo ndk
 
