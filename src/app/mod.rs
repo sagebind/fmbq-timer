@@ -273,7 +273,7 @@ fn timer_buttons(ui: &mut Ui, timer: &mut Timer) {
 
         ui.add_space(8.0);
 
-        if ui.add(Button::new("Test timer sound")).clicked() {
+        if ui.add(Button::new("Play timer sound")).clicked() {
             timer.test_audio();
             ui.ctx().request_repaint();
         }
