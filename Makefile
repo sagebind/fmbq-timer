@@ -5,7 +5,7 @@ VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
 ANDROID_TARGETS := armeabi-v7a arm64-v8a x86 x86_64
 
 SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
-ANDROID_NDK_VERSION := 26.3.11579264
+ANDROID_NDK_VERSION := 27.2.12479018
 export ANDROID_NDK_HOME ?= $(ANDROID_HOME)/ndk/$(ANDROID_NDK_VERSION)
 ANDROID_PLATFORM_VERSION := 34
 ANDROID_PLATFORM_JAR := $(ANDROID_HOME)/platforms/android-$(ANDROID_PLATFORM_VERSION)/android.jar
@@ -14,9 +14,9 @@ ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/$(ANDROID_PLATFORM_VERSIO
 CARGO_NDK := cargo ndk
 
 ZIPALIGN := $(ANDROID_BUILD_TOOLS_DIR)/zipalign
-AAPT2 := $(ANDROID_BUILD_TOOLS_DIR)/aapt2
-ADB := $(ANDROID_HOME)/platform-tools/adb
-APKSIGNER := $(ANDROID_BUILD_TOOLS_DIR)/apksigner
+AAPT2 := aapt2
+ADB := adb
+APKSIGNER := apksigner
 AAPT2_LINK_OPTS := --auto-add-overlay --rename-manifest-package $(APK_PACKAGE) \
 	--min-sdk-version 26 --target-sdk-version $(ANDROID_PLATFORM_VERSION) \
 	--version-code $(VERSION_CODE) \
@@ -64,11 +64,8 @@ run: target/apk/$(APK_PACKAGE:%=%-signed.apk)
 	$(ADB) shell monkey -p $(APK_PACKAGE) 1
 	$(ADB) logcat -v color -s fmbqtimer
 
-target/aab/$(APK_PACKAGE).aab: target/aab/$(APK_PACKAGE).zip target/aab/bundletool.jar
-	java -jar target/aab/bundletool.jar build-bundle --modules=$< --output=$@
-
-target/aab/bundletool.jar:
-	wget https://github.com/google/bundletool/releases/download/1.15.2/bundletool-all-1.15.2.jar -O $@
+target/aab/$(APK_PACKAGE).aab: target/aab/$(APK_PACKAGE).zip
+	bundletool build-bundle --modules=$< --output=$@
 
 target/aab/$(APK_PACKAGE).zip: $(APK_LIB_FILES) $(COMPILED_FILES)
 	-rm $@
