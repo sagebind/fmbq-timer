@@ -3,41 +3,42 @@ LIB_NAME := fmbqtimer # name of the native library
 VERSION_CODE = $(shell date '+$(ANDROID_PLATFORM_VERSION)%y%j')
 VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
 ANDROID_TARGETS := armeabi-v7a arm64-v8a x86 x86_64
-
-SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
 ANDROID_NDK_VERSION := 27.2.12479018
+ANDROID_PLATFORM_VERSION := 35
+
+# Files that affect the Rust build. Tracked just so Make knows when a rebuild is
+# necessary.
+RUST_SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
+
 export ANDROID_NDK_HOME ?= $(ANDROID_HOME)/ndk/$(ANDROID_NDK_VERSION)
-ANDROID_PLATFORM_VERSION := 34
 ANDROID_PLATFORM_JAR := $(ANDROID_HOME)/platforms/android-$(ANDROID_PLATFORM_VERSION)/android.jar
 ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/$(ANDROID_PLATFORM_VERSION).0.0
 
+# Define paths for various tools.
 CARGO_NDK := cargo ndk
-
 ZIPALIGN := $(ANDROID_BUILD_TOOLS_DIR)/zipalign
-AAPT2 := aapt2
+AAPT2 := $(ANDROID_BUILD_TOOLS_DIR)/aapt2
 ADB := adb
-APKSIGNER := apksigner
+APKSIGNER := $(ANDROID_BUILD_TOOLS_DIR)/apksigner
 AAPT2_LINK_OPTS := --auto-add-overlay --rename-manifest-package $(APK_PACKAGE) \
 	--min-sdk-version 26 --target-sdk-version $(ANDROID_PLATFORM_VERSION) \
 	--version-code $(VERSION_CODE) \
 	--version-name $(VERSION_NAME)
 
 ICON_SVG := images/icon.svg
-ICON_RESOURCE_FILES := res/mipmap-ldpi/ic_launcher.png res/mipmap-mdpi/ic_launcher.png res/mipmap-hdpi/ic_launcher.png res/mipmap-xhdpi/ic_launcher.png res/mipmap-xxhdpi/ic_launcher.png res/mipmap-xxxhdpi/ic_launcher.png
 
 APK_TARGET_ROOT_DIR := target/apk/root
-RESOURCE_FILES := $(shell find res -type f) $(ICON_RESOURCE_FILES)
-COMPILED_FILES := $(addprefix target/apk/compiled/,$(RESOURCE_FILES))
+RESOURCE_FILES = $(shell find res -type f)
+COMPILED_FILES = $(addprefix target/apk/compiled/,$(RESOURCE_FILES))
 APK_LIB_FILES := $(ANDROID_TARGETS:%=$(APK_TARGET_ROOT_DIR)/lib/%/$(LIB_NAME:%=lib%.so))
 ANDROID_MANIFEST := AndroidManifest.xml
-APK_FLAT_FILES = $(shell find target/apk/compiled -type f -name '*.flat')
 
 # Default to the first one defined in the dev environment
-EMULATOR_AVD := $(shell $(ANDROID_HOME)/emulator/emulator -list-avds | head -n1)
+EMULATOR_AVD = $(shell $(ANDROID_HOME)/emulator/emulator -list-avds | head -n1)
 
 export ANDROID_SDK_ROOT := $(ANDROID_HOME)
 export RUST_LOG := cargo_ndk=debug
-export CARGO_NDK_MAJOR_VERSION := 25
+export CARGO_NDK_MAJOR_VERSION := 27
 
 # Load environment variables from .env files
 ifneq (,$(wildcard ./.env))
@@ -70,13 +71,13 @@ target/aab/$(APK_PACKAGE).aab: target/aab/$(APK_PACKAGE).zip
 target/aab/$(APK_PACKAGE).zip: $(APK_LIB_FILES) $(COMPILED_FILES)
 	-rm $@
 	@mkdir -p $(@D)
-	$(AAPT2) link $(AAPT2_LINK_OPTS) --proto-format -o $@ -I $(ANDROID_PLATFORM_JAR) --manifest $(ANDROID_MANIFEST) $(addprefix -R ,$(APK_FLAT_FILES))
+	$(AAPT2) link $(AAPT2_LINK_OPTS) --proto-format -o $@ -I $(ANDROID_PLATFORM_JAR) --manifest $(ANDROID_MANIFEST) target/apk/compiled/*.flat
 	cd $(APK_TARGET_ROOT_DIR) && zip --no-dir-entries --suffixes .so -r $(CURDIR)/$@ .
 
 # Build an actual APK
 target/apk/$(APK_PACKAGE:%=%-unsigned.apk): $(APK_LIB_FILES) $(COMPILED_FILES)
 	-rm $@
-	$(AAPT2) link $(AAPT2_LINK_OPTS) -o $@ -I $(ANDROID_PLATFORM_JAR) --manifest $(ANDROID_MANIFEST) $(addprefix -R ,$(APK_FLAT_FILES))
+	$(AAPT2) link $(AAPT2_LINK_OPTS) -o $@ -I $(ANDROID_PLATFORM_JAR) --manifest $(ANDROID_MANIFEST) target/apk/compiled/*.flat
 	cd $(APK_TARGET_ROOT_DIR) && zip --no-dir-entries --suffixes .so -r $(CURDIR)/$@ .
 
 # Entries in the ZIP need to be aligned
@@ -92,7 +93,7 @@ target/apk/compiled/%: %
 
 # Compiles the Rust code into a set of native libraries for each target triple.
 # The `cargo ndk` helper does most of the work here.
-$(APK_LIB_FILES) &: $(SRC_FILES)
+$(APK_LIB_FILES) &: $(RUST_SRC_FILES)
 	@mkdir -p $(APK_TARGET_ROOT_DIR)/lib
 	$(CARGO_NDK) --output-dir $(APK_TARGET_ROOT_DIR)/lib $(ANDROID_TARGETS:%=--target %) build --release
 
