@@ -9,13 +9,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install cargo-ndk
-        run: cargo install cargo-ndk
+      - name: Install flox
+        uses: flox/install-flox-action@v2
 
       - name: Build
-        run: make -j4 target/apk/org.fmbq.timer-unsigned.apk
+        run: flox activate -- make -j4 target/apk/org.fmbq.timer-unsigned.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: org.fmbq.timer.dev-unsigned.apk
-          path: target/apk/org.fmbq.timer.dev-unsigned.apk
+          name: org.fmbq.timer-unsigned.apk
+          path: target/apk/org.fmbq.timer-unsigned.apk
