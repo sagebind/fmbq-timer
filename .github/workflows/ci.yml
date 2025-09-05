@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
@@ -15,7 +15,7 @@ jobs:
       - name: Build
         run: make -j4 target/apk/org.fmbq.timer.dev-unsigned.apk
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v5
         with:
           name: org.fmbq.timer.dev-unsigned.apk
           path: target/apk/org.fmbq.timer.dev-unsigned.apk
