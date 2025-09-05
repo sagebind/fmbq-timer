@@ -13,7 +13,7 @@ jobs:
         run: cargo install cargo-ndk
 
       - name: Build
-        run: make -j4 target/apk/org.fmbq.timer.dev-unsigned.apk
+        run: make -j4 target/apk/org.fmbq.timer-unsigned.apk
 
       - uses: actions/upload-artifact@v4
         with:
