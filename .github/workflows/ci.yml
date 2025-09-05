@@ -15,7 +15,7 @@ jobs:
       - name: Build
         run: make -j4 target/apk/org.fmbq.timer.dev-unsigned.apk
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v4
         with:
           name: org.fmbq.timer.dev-unsigned.apk
           path: target/apk/org.fmbq.timer.dev-unsigned.apk
