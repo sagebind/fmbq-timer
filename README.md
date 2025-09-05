@@ -19,3 +19,13 @@ Some parts of the Android SDK build process are stateful. If something stops wor
 ```sh
 make clean
 ```
+
+## Installation
+
+A signed and prebuilt version is available on the Google Play store.
+
+<a href="https://play.google.com/store/apps/details?id=org.fmbq.timer"><img alt="Get it on Google Play" src="https://cdn.rawgit.com/steverichey/google-play-badge-svg/master/img/en_get.svg" height="64"></a>
+
+## License
+
+This project's source code and documentation is licensed under the MIT license. See the [LICENSE](LICENSE) file for details.
