@@ -3,16 +3,14 @@ LIB_NAME := fmbqtimer # name of the native library
 VERSION_CODE = $(shell date '+$(ANDROID_PLATFORM_VERSION)%y%j')
 VERSION_NAME := $(shell awk -F '[ "]+' '/version/ {print $$3; exit}' Cargo.toml)
 ANDROID_TARGETS := armeabi-v7a arm64-v8a x86 x86_64
-ANDROID_NDK_VERSION := 27.2.12479018
-ANDROID_PLATFORM_VERSION := 35
 
 # Files that affect the Rust build. Tracked just so Make knows when a rebuild is
 # necessary.
 RUST_SRC_FILES := Cargo.lock Cargo.toml $(shell find . -type f -name '*.rs')
 
-export ANDROID_NDK_HOME ?= $(ANDROID_HOME)/ndk/$(ANDROID_NDK_VERSION)
+export ANDROID_NDK_HOME ?= $(ANDROID_NDK_ROOT)
 ANDROID_PLATFORM_JAR := $(ANDROID_HOME)/platforms/android-$(ANDROID_PLATFORM_VERSION)/android.jar
-ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/$(ANDROID_PLATFORM_VERSION).0.0
+ANDROID_BUILD_TOOLS_DIR := $(ANDROID_HOME)/build-tools/$(ANDROID_BUILD_TOOLS_VERSION)
 
 # Define paths for various tools.
 CARGO_NDK := cargo ndk

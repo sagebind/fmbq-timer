@@ -1,4 +1,11 @@
+.android
+.env
+*.apk
 /result-*
 /target
-*.apk
-.env
+
+.devenv*
+devenv.local.nix
+.direnv
+.pre-commit-config.yaml
+/local.properties
