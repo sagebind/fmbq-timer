@@ -10,7 +10,7 @@ in {
   env.ANDROID_BUILD_TOOLS_VERSION = android-build-tools-version;
 
   dotenv.enable = true;
-  packages = [ pkgs.cargo-ndk pkgs.git pkgs.gnumake ];
+  packages = [ pkgs.cargo-apk pkgs.cargo-ndk pkgs.git pkgs.gnumake ];
 
   android = {
     enable = true;
@@ -18,10 +18,22 @@ in {
     ndk.version = [ android-ndk-version ];
     buildTools.version = [ android-build-tools-version ];
     platforms.version = [ android-platform-version ];
-    systemImages.enable = false;
   };
 
   tasks = {
     "app:build".exec = "make -j4 target/apk/org.fmbq.timer-unsigned.apk";
+    "app:run".exec = "cargo apk run -p fmbqtimer | tee /dev/tty";
+
+    "emulator:create" = {
+      exec = ''
+        yes "" | avdmanager create avd --name egui-android-demo --package 'system-images;android-35;google_apis_playstore;x86_64'
+      '';
+      status = "emulator -list-avds | grep -q egui-android-demo";
+      before = [ "devenv:processes:emulator" ];
+    };
+  };
+
+  processes = {
+    emulator.exec = "emulator -avd egui-android-demo -netdelay none -netspeed full -no-snapshot -restart-when-stalled -gpu swiftshader_indirect";
   };
 }

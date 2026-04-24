@@ -82,7 +82,7 @@ impl eframe::App for App {
             let content_rect = self.platform_ctx.android_app.content_rect();
             // TODO: Why is the top of the content rect so large?
             self.content_margin.top =
-                (content_rect.top as f32 / ctx.pixels_per_point()).clamp(0.0, 32.0);
+                (content_rect.top as f32 / ctx.pixels_per_point()).clamp(24.0, 48.0);
             self.content_margin.bottom = frame.info().window_info.size.y
                 - (content_rect.bottom as f32 / ctx.pixels_per_point());
         }

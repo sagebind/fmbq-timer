@@ -1,6 +1,6 @@
 [package]
 name = "fmbqtimer"
-version = "2.0.0-alpha.6"
+version = "2.0.0-alpha.7"
 edition = "2021"
 
 [lib]
@@ -61,6 +61,32 @@ features = ["formatting", "local-offset"]
 [patch.crates-io.winit]
 git = "https://github.com/sagebind/winit.git"
 branch = "android-activity-relaunch-patches"
+
+[package.metadata.android]
+package = "org.fmbq.timer"
+build_targets = ["armv7-linux-androideabi", "i686-linux-android", "x86_64-linux-android"]
+
+[package.metadata.android.sdk]
+min_sdk_version = 26
+target_sdk_version = 35
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.WAKE_LOCK"
+
+[package.metadata.android.application]
+label = "FMBQ Timer"
+icon = "@mipmap/ic_launcher"
+extract_native_libs = false
+
+[package.metadata.android.application.activity]
+name = "android.app.NativeActivity"
+label = "FMBQ Timer"
+exported = true
+config_changes = "orientation|screenSize|screenLayout|keyboardHidden"
+
+[[package.metadata.android.application.activity.intent_filter]]
+actions = ["android.intent.action.MAIN"]
+categories = ["android.intent.category.LAUNCHER"]
 
 [workspace]
 members = ["crates/*"]
