@@ -1,0 +1,30 @@
+name: release
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+
+      - name: Hydrate signing keystore
+        run: echo "${{ secrets.SIGNING_KEYSTORE }}" | base64 -d > /tmp/signing.keystore
+
+      - name: Build signed release APK
+        env:
+          FNOX_PROFILE: ci
+          FNOX_AGE_KEY: ${{ secrets.FNOX_AGE_KEY }}
+        run: mise run app:build-release
+
+      - run: rm /tmp/signing.keystore
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: org.fmbq.timer.apk
+          path: target/release/apk/fmbqtimer.apk
