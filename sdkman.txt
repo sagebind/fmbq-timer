@@ -1,4 +1,4 @@
 build-tools;36.1.0
-ndk;29.0.14206865
+ndk;30.0.16138531
 platform-tools
 platforms;android-36

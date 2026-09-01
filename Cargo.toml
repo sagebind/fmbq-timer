@@ -70,6 +70,7 @@ build_targets = ["armv7-linux-androideabi", "i686-linux-android", "x86_64-linux-
 [package.metadata.android.sdk]
 min_sdk_version = 26
 target_sdk_version = 36
+max_sdk_version = 36
 
 [[package.metadata.android.uses_permission]]
 name = "android.permission.WAKE_LOCK"

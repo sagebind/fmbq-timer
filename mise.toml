@@ -10,7 +10,7 @@ pitchfork = "latest"
 imagemagick = "latest"
 
 [tools.android-sdk]
-version = "19.0"
+version = "21.0"
 dependencies = ["java"]
 
 [tools."cargo:cargo-apk"]
@@ -18,18 +18,10 @@ version = "latest"
 dependencies = ["cargo-binstall"]
 
 [env]
-ANDROID_NDK_VERSION = "29.0.14206865"
+ANDROID_NDK_VERSION = "30.0.16138531"
 
 [env.ANDROID_NDK_ROOT]
 value = "{{env.ANDROID_HOME}}/ndk/{{env.ANDROID_NDK_VERSION}}"
-tools = true
-
-[env.ANDROID_SDK_ROOT]
-value = "{{env.ANDROID_HOME}}"
-tools = true
-
-[env._.path]
-path = ["{{env.ANDROID_HOME}}/build-tools/36.1.0"]
 tools = true
 
 [tasks]
