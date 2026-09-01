@@ -65,7 +65,7 @@ branch = "android-activity-relaunch-patches"
 [package.metadata.android]
 package = "org.fmbq.timer"
 resources = "res"
-build_targets = ["armv7-linux-androideabi", "i686-linux-android", "x86_64-linux-android"]
+build_targets = ["armv7-linux-androideabi", "aarch64-linux-android", "i686-linux-android", "x86_64-linux-android"]
 
 [package.metadata.android.sdk]
 min_sdk_version = 26
