@@ -3,8 +3,10 @@ idiomatic_version_file_enable_tools = ["rust"]
 
 [tools]
 cargo-binstall = "latest"
+fnox = "latest"
 java = "latest"
 pitchfork = "latest"
+imagemagick = "latest"
 
 [tools.android-sdk]
 version = "19.0"
@@ -36,6 +38,10 @@ sdkmanager-install = "yes | sdkmanager --package_file=sdkman.txt"
 run = "cargo apk build"
 depends = ["sdkmanager-install"]
 
+[tasks."app:build-release"]
+run = "fnox exec -- cargo apk build --release"
+depends = ["sdkmanager-install"]
+
 [tasks."app:run"]
 run = "cargo apk run | tee /dev/tty"
 depends = ["app:build", "emulator:start"]
@@ -46,3 +52,6 @@ depends = ["app:build", "emulator:create"]
 
 [tasks."emulator:stop"]
 run = "pitchfork stop emulator"
+
+[bootstrap.packages]
+"dnf:alsa-lib-devel" = "latest"

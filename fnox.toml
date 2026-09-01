@@ -1,0 +1,15 @@
+[providers.keychain]
+type = "keychain"
+service = "fnox"
+
+[providers.age]
+type = "age"
+recipients = ["age18awmjqdnafxshg8tx5a4p2e5kemz890hzlkaphgl23gdr0hh6axq2fcgqt"]
+identity = {
+    provider = "keychain",
+    value = "age-key",
+}
+
+[secrets]
+CARGO_APK_RELEASE_KEYSTORE= { provider = "age", value = "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqNTF3ZVRqOHdpbExoM3ZPVVFON0prU2RLS3Ywb2dlN2xrUE9NWDE2UFZvCm9CMTRGRGlNajNvMkIvSEF5TVg0OGxiazdHMnBBcXY5R1pMQjNLU1NtSE0KLT4gKClDY24tZ3JlYXNlIGMjJ0ZxSjAgdEdBOgpsbktwd0I0MTdEbTN0dTEybEFHSQotLS0gTG5LRytVakpGVXV0ZXZUZmFmZkpTSzBIUjFja2YxZngwdTNFYTBnTlZYUQr7z1cgvrUmY3Sl9Mr2Efx2fIbODjuBwK5RN0XU1KELpaJ4xZE0ltQ6TFC+YVXYdJzCnvMhGYfQqUKfu8+f6E/7e9PYm8WxmXWog7DgZV1s6QcbbqHdPVV9WA==" }
+CARGO_APK_RELEASE_KEYSTORE_PASSWORD= { provider = "age", value = "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoLzFsdmpSZ2hmNUppSjZMa0FHcCt0bXFldURhdlAyTUJoOHpJYUhlRENJClUzVjVoZi9Sd1QxQ2tIdFUrNnhLRElSUm5KVUFjaElFUkpjVjVxUmNjYkkKLT4gNHwhYi9OLWdyZWFzZQpPM2J4ZlBKdm1jTDV2Wjh5YjdRWEprSHFqRk4yc1cyU0F6VnJNTkFTRjNHbXVyMCtnSkhoNUVRM3JBRWFrVm1ICkJFdUw5dG43TkZIRFp2YVpIRTArOHF4L2c1dXFhbzZIWGlDOW83RUkKLS0tIDQ1b2JqYVN6V3BOQjZ0MVU0WDcvQTcvNmZFWC9RbTNmcC9reDhwc2ptZzgKzEWxHBZjAZjHFtPnfZPBFBSbFUfbPAa9HeOH8v0dn5eoJT/dJUfjZrDkTQ==" }

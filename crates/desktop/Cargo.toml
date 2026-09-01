@@ -1,0 +1,19 @@
+[package]
+name = "fmbqtimer-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+appstorage.path = "../appstorage"
+env_logger = "0.10"
+fmbqtimer.path = "../.."
+
+[dependencies.eframe]
+version = "0.23"
+default-features = false
+features = [
+    "glow",
+    "default_fonts",
+    "wayland",
+    "x11",
+]

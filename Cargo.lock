@@ -748,6 +748,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "fmbqtimer-desktop"
+version = "0.1.0"
+dependencies = [
+ "appstorage",
+ "eframe",
+ "env_logger",
+ "fmbqtimer",
+]
+
+[[package]]
 name = "foreign-types"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

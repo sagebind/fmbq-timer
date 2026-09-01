@@ -7,18 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v26
-      - uses: cachix/cachix-action@v14
-        with:
-          name: devenv
-      - name: Install devenv.sh
-        run: nix profile install nixpkgs#devenv
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
 
       - name: Build
-        run: devenv tasks run app:build
+        run: mise run app:build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
-          name: org.fmbq.timer-unsigned.apk
-          path: target/apk/org.fmbq.timer-unsigned.apk
+          name: org.fmbq.timer.apk
+          path: target/debug/apk/fmbqtimer.apk

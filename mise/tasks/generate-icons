@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Generate raster resources for icon"
+
+magick -size 36x36 -background none images/icon.svg res/mipmap-ldpi/ic_launcher.png
+magick -size 48x48 -background none images/icon.svg res/mipmap-mdpi/ic_launcher.png
+magick -size 72x72 -background none images/icon.svg res/mipmap-hdpi/ic_launcher.png
+magick -size 96x96 -background none images/icon.svg res/mipmap-xhdpi/ic_launcher.png
+magick -size 144x144 -background none images/icon.svg res/mipmap-xxhdpi/ic_launcher.png
+magick -size 192x192 -background none images/icon.svg res/mipmap-xxxhdpi/ic_launcher.png
