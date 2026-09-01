@@ -1,10 +1,7 @@
 name: release
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - '*.*.*'
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -24,7 +21,5 @@ jobs:
 
       - run: rm /tmp/signing.keystore
 
-      - uses: actions/upload-artifact@v7
-        with:
-          name: org.fmbq.timer.apk
-          path: target/release/apk/fmbqtimer.apk
+      - name: Upload APK as release asset
+        run: gh release upload ${{ github.event.release.tag_name }} target/release/apk/fmbqtimer.apk
