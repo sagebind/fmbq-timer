@@ -1,5 +1,4 @@
 build-tools;36.1.0
-emulator
-ndk;27.2.12479018
+ndk;29.0.14206865
 platform-tools
 platforms;android-36
