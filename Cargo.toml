@@ -78,6 +78,7 @@ name = "android.permission.WAKE_LOCK"
 label = "FMBQ Timer"
 icon = "@mipmap/ic_launcher"
 extract_native_libs = false
+has_code = false
 
 [package.metadata.android.application.activity]
 name = "android.app.NativeActivity"

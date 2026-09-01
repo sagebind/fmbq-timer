@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE depends=["sdkmanager-install"]
+
+package="system-images;android-35;google_apis_playstore;x86_64"
+
+sdkmanager --install "$package"
+
+if $ANDROID_HOME/emulator/emulator -list-avds | grep -q fmbqtimer; then
+  exit 0
+fi
+
+yes '' | avdmanager create avd --name fmbqtimer --package "$package"
