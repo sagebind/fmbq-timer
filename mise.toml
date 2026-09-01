@@ -18,7 +18,7 @@ version = "latest"
 dependencies = ["cargo-binstall"]
 
 [env]
-ANDROID_NDK_VERSION = "27.2.12479018"
+ANDROID_NDK_VERSION = "29.0.14206865"
 
 [env.ANDROID_NDK_ROOT]
 value = "{{env.ANDROID_HOME}}/ndk/{{env.ANDROID_NDK_VERSION}}"
@@ -29,7 +29,7 @@ value = "{{env.ANDROID_HOME}}"
 tools = true
 
 [env._.path]
-path = ["{{env.ANDROID_HOME}}/build-tools/35.0.1"]
+path = ["{{env.ANDROID_HOME}}/build-tools/36.1.0"]
 tools = true
 
 [tasks]
