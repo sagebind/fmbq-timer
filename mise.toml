@@ -1,0 +1,48 @@
+[settings]
+idiomatic_version_file_enable_tools = ["rust"]
+
+[tools]
+cargo-binstall = "latest"
+java = "latest"
+pitchfork = "latest"
+
+[tools.android-sdk]
+version = "19.0"
+dependencies = ["java"]
+
+[tools."cargo:cargo-apk"]
+version = "latest"
+dependencies = ["cargo-binstall"]
+
+[env]
+ANDROID_NDK_VERSION = "27.2.12479018"
+
+[env.ANDROID_NDK_ROOT]
+value = "{{env.ANDROID_HOME}}/ndk/{{env.ANDROID_NDK_VERSION}}"
+tools = true
+
+[env.ANDROID_SDK_ROOT]
+value = "{{env.ANDROID_HOME}}"
+tools = true
+
+[env._.path]
+path = ["{{env.ANDROID_HOME}}/build-tools/35.0.1"]
+tools = true
+
+[tasks]
+sdkmanager-install = "yes | sdkmanager --package_file=sdkman.txt"
+
+[tasks."app:build"]
+run = "cargo apk build"
+depends = ["sdkmanager-install"]
+
+[tasks."app:run"]
+run = "cargo apk run | tee /dev/tty"
+depends = ["app:build", "emulator:start"]
+
+[tasks."emulator:start"]
+run = "pitchfork start emulator"
+depends = ["app:build", "emulator:create"]
+
+[tasks."emulator:stop"]
+run = "pitchfork stop emulator"

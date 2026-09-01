@@ -1,0 +1,5 @@
+build-tools;35.0.1
+emulator
+ndk;27.2.12479018
+platform-tools
+platforms;android-35
