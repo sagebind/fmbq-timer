@@ -2,15 +2,15 @@
 
 use std::{env, sync::Once};
 use winit::platform::android::{
-    activity::{AndroidApp, WindowManagerFlags},
     EventLoopBuilderExtAndroid,
+    activity::{AndroidApp, WindowManagerFlags},
 };
 
 use crate::PlatformContext;
 
 pub mod audio_player;
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub fn android_main(app: AndroidApp) {
     init_logging();
 
@@ -20,8 +20,10 @@ pub fn android_main(app: AndroidApp) {
     // Trick egui to persist storage in our dedicated Android storage location.
     if let Some(path) = app.internal_data_path() {
         log::info!("internal data path: {:?}", path);
-        env::set_var("HOME", path.to_str().unwrap());
-        env::set_var("XDG_DATA_HOME", path.to_str().unwrap());
+        unsafe {
+            env::set_var("HOME", path.to_str().unwrap());
+            env::set_var("XDG_DATA_HOME", path.to_str().unwrap());
+        }
     }
 
     // Ask Android to keep the screen on while this app is visible. This is very
